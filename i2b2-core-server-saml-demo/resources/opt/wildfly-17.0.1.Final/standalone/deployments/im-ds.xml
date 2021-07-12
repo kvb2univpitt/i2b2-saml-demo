@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (c) 2006-2018 Massachusetts General Hospital
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Mozilla Public License,
+v. 2.0. If a copy of the MPL was not distributed with this file, You can
+obtain one at http://mozilla.org/MPL/2.0/. I2b2 is also distributed under
+the terms of the Healthcare Disclaimer.
+-->
 <datasources xmlns="http://www.jboss.org/ironjacamar/schema">
     <datasource jta="false" jndi-name="java:/IMBootStrapDS" pool-name="IMBootStrapDS" enabled="true" use-ccm="false">
-        <connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
+        <connection-url>jdbc:postgresql://i2b2-data-saml-demo:5432/i2b2</connection-url>
         <driver-class>org.postgresql.Driver</driver-class>
         <driver>postgresql-42.2.8.jar</driver>
         <security>
@@ -21,7 +29,7 @@
         </statement>
     </datasource>
     <datasource jta="false" jndi-name="java:/IMDemoDS" pool-name="IMDemoDS" enabled="true" use-ccm="false">
-        <connection-url>jdbc:postgresql://localhost:5432/i2b2</connection-url>
+        <connection-url>jdbc:postgresql://i2b2-data-saml-demo:5432/i2b2</connection-url>
         <driver-class>org.postgresql.Driver</driver-class>
         <driver>postgresql-42.2.8.jar</driver>
         <security>

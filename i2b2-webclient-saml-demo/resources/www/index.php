@@ -44,12 +44,16 @@ $WHITELIST = array(
     "http://127.0.0.1",
     "http://localhost:8080",
     "http://localhost:9090",
-    "http://localhost"
+    "http://localhost",
+    "http://i2b2-core-server-saml-demo:8080",
+    "http://i2b2-core-server-saml-demo:9090",
+    "http://i2b2-core-server-saml-demo"
 );
 
 $BLACKLIST = array(
     "http://127.0.0.1:9090/test",
-    "http://localhost:9090/test"
+    "http://localhost:9090/test",
+    "http://i2b2-core-server-saml-demo:9090/test"
 );
 
 // There is nothing to configure below this line
