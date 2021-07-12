@@ -57,7 +57,7 @@ docker run -d --name=i2b2-idp-saml-demo \
 kvb2univpitt/i2b2-idp-saml-demo:v1.2021.7
 ```
 
-###### Windows
+###### Windows:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo ^
@@ -80,7 +80,7 @@ docker run -d --name=i2b2-data-saml-demo \
 kvb2univpitt/i2b2-data-saml-demo:v1.2021.7
 ```
 
-###### Windows
+###### Windows:
 
 ```
 docker run -d --name=i2b2-data-saml-demo ^
@@ -101,7 +101,7 @@ docker run -d --name=i2b2-core-server-saml-demo \
 kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.7
 ```
 
-###### Windows
+###### Windows:
 
 ```
 docker run -d --name=i2b2-core-server-saml-demo ^
@@ -121,7 +121,7 @@ docker run -d --name=i2b2-webclient-saml-demo \
 kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.7
 ```
 
-###### Windows
+###### Windows:
 
 ```
 docker run -d --name=i2b2-webclient-saml-demo ^
