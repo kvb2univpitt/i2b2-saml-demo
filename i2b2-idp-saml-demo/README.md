@@ -44,6 +44,32 @@ Below is the admin account:
 |----------|----------|
 | admin    | demouser |
 
+## Ensure i2b2-saml-demo-net Network Exists
+
+Containers need to be run on the **i2b2-saml-demo-net** network so that they can communicate with each other.
+
+To verify that network **i2b2-saml-demo-net** exists, open up a terminal and execute the following command:
+
+```
+docker network ls
+```
+
+You should see **i2b2-saml-demo-net** from the output similar to this:
+
+```
+NETWORK ID     NAME                 DRIVER    SCOPE
+0576db9e5151   bridge               bridge    local
+58593240ad9d   host                 host      local
+52abc9676b47   i2b2-saml-demo-net   bridge    local
+aa3bc8690d35   none                 null      local
+```
+
+If the **i2b2-saml-demo-net** network does not exists, execute the following command to create one:
+
+```
+docker network create i2b2-saml-demo-net
+```
+
 ## Run the Prebuilt Image in a Container
 
 ### Prerequisites
@@ -56,6 +82,7 @@ Linux / macOS:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo \
+--network i2b2-saml-demo-net \
 -p 8080:8080 \
 -p 8443:8443 \
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser \
@@ -66,6 +93,7 @@ Windows:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo ^
+--network i2b2-saml-demo-net ^
 -p 8080:8080 ^
 -p 8443:8443 ^
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser ^
@@ -104,8 +132,10 @@ Linux / macOS:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo \
+--network i2b2-saml-demo-net \
 -p 8080:8080 \
 -p 8443:8443 \
+
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser \
 local/i2b2-idp-saml-demo
 ```
@@ -114,6 +144,7 @@ Windows:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo ^
+--network i2b2-saml-demo-net ^
 -p 8080:8080 ^
 -p 8443:8443 ^
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser ^

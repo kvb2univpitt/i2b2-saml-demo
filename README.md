@@ -33,10 +33,11 @@ docker network ls
 You should see **i2b2-saml-demo-net** from the output similar to this:
 
 ```
-NETWORK ID     NAME            DRIVER    SCOPE
-d86843421945   bridge          bridge    local
-58593240ad9d   host            host      local
-9a82abc00473   i2b2-saml-demo-net   bridge    local
+NETWORK ID     NAME                 DRIVER    SCOPE
+0576db9e5151   bridge               bridge    local
+58593240ad9d   host                 host      local
+52abc9676b47   i2b2-saml-demo-net   bridge    local
+aa3bc8690d35   none                 null      local
 ```
 
 ### Run i2b2 Prebuild Docker Images in Containers

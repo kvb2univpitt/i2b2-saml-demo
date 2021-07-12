@@ -1,6 +1,32 @@
 # i2b2-data-saml-demo
 
-A Docker image of the i2b2-data demo, version 1.7.12a, for SAML demonstration.
+A Docker image of the i2b2-data (version 1.7.12a) demo for SAML demonstration.
+
+## Ensure i2b2-saml-demo-net Network Exists
+
+Containers need to be run on the **i2b2-saml-demo-net** network so that they can communicate with each other.
+
+To verify that network **i2b2-saml-demo-net** exists, open up a terminal and execute the following command:
+
+```
+docker network ls
+```
+
+You should see **i2b2-saml-demo-net** from the output similar to this:
+
+```
+NETWORK ID     NAME                 DRIVER    SCOPE
+0576db9e5151   bridge               bridge    local
+58593240ad9d   host                 host      local
+52abc9676b47   i2b2-saml-demo-net   bridge    local
+aa3bc8690d35   none                 null      local
+```
+
+If the **i2b2-saml-demo-net** network does not exists, execute the following command to create one:
+
+```
+docker network create i2b2-saml-demo-net
+```
 
 ## Run the Prebuilt Image in a Container
 
@@ -14,6 +40,7 @@ Linux / macOS:
 
 ```
 docker run -d --name=i2b2-data-saml-demo \
+--network i2b2-saml-demo-net \
 -e POSTGRESQL_ADMIN_PASSWORD=demouser \
 -p 5432:5432 \
 kvb2univpitt/i2b2-data-saml-demo:v1.2021.7
@@ -23,6 +50,7 @@ Windows:
 
 ```
 docker run -d --name=i2b2-data-saml-demo ^
+--network i2b2-saml-demo-net ^
 -e POSTGRESQL_ADMIN_PASSWORD=demouser ^
 -p 5432:5432 ^
 kvb2univpitt/i2b2-data-saml-demo:v1.2021.7
@@ -90,6 +118,7 @@ Linux / macOS:
 
 ```
 docker run -d --name=i2b2-data-saml-demo \
+--network i2b2-saml-demo-net \
 -e POSTGRESQL_ADMIN_PASSWORD=demouser \
 -p 5432:5432 \
 local/i2b2-data-saml-demo
@@ -99,6 +128,7 @@ Windows:
 
 ```
 docker run -d --name=i2b2-data-saml-demo ^
+--network i2b2-saml-demo-net ^
 -e POSTGRESQL_ADMIN_PASSWORD=demouser ^
 -p 5432:5432 ^
 local/i2b2-data-saml-demo
