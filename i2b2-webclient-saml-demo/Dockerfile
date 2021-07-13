@@ -12,7 +12,7 @@ RUN unzip /tmp/v1.7.12a.0002.zip -d /var/www/html/ \
 COPY resources/shibboleth/ /etc/shibboleth/
 COPY resources/httpd/conf/ /etc/httpd/conf/
 COPY resources/httpd/conf.d/ /etc/httpd/conf.d/
-COPY resources/www/ /var/www/html/webclient/
+COPY resources/www/ /var/www/html/
 
 RUN test -d /var/run/lock || mkdir -p /var/run/lock \
     && test -d /var/lock/subsys/ || mkdir -p /var/lock/subsys/ \
