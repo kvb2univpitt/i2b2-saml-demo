@@ -100,3 +100,9 @@ docker run -d --name=i2b2-core-server-saml-demo ^
 -p 9090:9090 ^
 local/i2b2-core-server-saml-demo
 ```
+
+## Access the Application
+
+Open up a web browser and go to the following URL to access the list of services:
+
+[http://localhost:9090/i2b2/services/listServices](http://localhost:9090/i2b2/services/listServices)

@@ -129,3 +129,9 @@ docker run -d --name=i2b2-webclient-saml-demo ^
 -p 80:80 -p 443:443 ^
 kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.7
 ```
+
+### URLs
+
+i2b2 webclient application: [https://localhost/webclient/](https://localhost/webclient/)
+
+i2b2 list of core services: [http://localhost:9090/i2b2/services/listServices](http://localhost:9090/i2b2/services/listServices)

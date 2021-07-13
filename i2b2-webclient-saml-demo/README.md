@@ -100,3 +100,9 @@ docker run -d --name=i2b2-webclient-saml-demo ^
 -p 80:80 -p 443:443 ^
 local/i2b2-webclient-saml-demo
 ```
+
+## Access the Application
+
+Open up a web browser and go to the following URL to access the web application:
+
+[https://localhost/webclient/](https://localhost/webclient/)
