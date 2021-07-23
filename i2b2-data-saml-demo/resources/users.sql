@@ -17,6 +17,6 @@ INSERT INTO pm_project_user_roles (project_id,user_id,user_role_cd,status_cd) VA
 INSERT INTO pm_project_user_roles (project_id,user_id,user_role_cd,status_cd) VALUES ('Demo','ckent','EDITOR','A');
 INSERT INTO pm_project_user_roles (project_id,user_id,user_role_cd,status_cd) VALUES ('Demo','ckent','DATA_PROT','A');
 
-INSERT INTO pm_user_params (user_id,param_name_cd,value) VALUES ('kdanvers','eppn','karadanvers@catco.com');
-INSERT INTO pm_user_params (user_id,param_name_cd,value) VALUES ('ckent','eppn','ckent@dailyplanet.com');
-INSERT INTO pm_user_params (user_id,param_name_cd,value) VALUES ('ckent','eppn','clarkkent@catco.com');
+INSERT INTO pm_user_params (datatype_cd,user_id,param_name_cd,value,status_cd) VALUES ('T','kdanvers','eppn','karadanvers@catco.com','A');
+INSERT INTO pm_user_params (datatype_cd,user_id,param_name_cd,value,status_cd) VALUES ('T','ckent','eppn','ckent@dailyplanet.com','A');
+INSERT INTO pm_user_params (datatype_cd,user_id,param_name_cd,value,status_cd) VALUES ('T','ckent','eppn','clarkkent@catco.com','A');
