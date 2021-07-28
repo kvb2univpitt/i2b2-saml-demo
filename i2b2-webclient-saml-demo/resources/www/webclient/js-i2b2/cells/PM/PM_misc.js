@@ -133,24 +133,66 @@ i2b2.PM.model.IdleTimer.subscribe("idle", function () {
 // login screen
 // ================================================================================================== //
 i2b2.PM.model.html = {};
-i2b2.PM.model.html.loginDialog = '<div id="i2b2_login_modal_dialog" style="display:block;">\n' +
-        '	<div class="hd">' + i2b2.UI.cfg.loginHeaderText + '</div>\n' +
-        '	<div class="bd login-dialog">\n' +
-        '		<form name="loginForm" style="margin:0;padding:0;" onsubmit="i2b2.PM.doLogin(); return false;">\n' +
-        '			<div id="loginMessage">Login incorrect or host not found.</div>\n' +
-        '			<div class="formDiv">\n' +
-        '				<div class="label">' + i2b2.UI.cfg.loginUsernameText + '</div>\n' +
-        '				<div class="input"><input type="text" name="uname" id="loginusr" value="' + i2b2.UI.cfg.loginDefaultUsername + '" size="20" maxlength="50" /></div>\n' +
-        '				<div class="label">' + i2b2.UI.cfg.loginPasswordText + '</div>\n' +
-        '				<div class="input"><input type="password" name="pword" id="loginpass" value="' + i2b2.UI.cfg.loginDefaultPassword + '" size="20" maxlength="50" /></div>\n' +
-        '				<div class="label">' + i2b2.UI.cfg.loginHostText + '</div>\n' +
-        '				<div class="input"><select name="server" id="logindomain"><option value="">Loading...</option></select></div>\n' +
-        '				<span class="button"><input type="button" id="loginButton" value="Login" onclick="i2b2.PM.doLogin()" /></span>\n' +
-        '				<span class="button"><input type="button" value="Federated Login" onclick="location.href = \'login.php\';" /></span>\n' +
-        '			</div>\n' +
-        '		</form>\n' +
-        '	</div>\n' +
-        '</div>\n';
+i2b2.PM.model.html.loginDialog = `
+<div id="i2b2_login_modal_dialog" style="display:block;">
+    <div class="hd">${i2b2.UI.cfg.loginHeaderText}</div>
+    <div class="login-dialog">
+        <div class="row py-3 px-3" id="error_msg" style="display: ${error_msg.length > 0 ? 'block' : 'none'};">
+            <div class="col-12">
+                <div class="alert alert-danger" role="alert"><h6>${error_msg}</h6></div>
+            </div>
+        </div>
+        <div class="row py-3 px-3" id="success_msg" style="display: ${success_msg.length > 0 ? 'block' : 'none'};">
+            <div class="col-12">
+                <div class="alert alert-success" role="alert"><h6>${success_msg}</h6></div>
+            </div>
+        </div>
+        <div class="row py-3 px-3">
+            <div class="col-6">
+                <h6>Sign In</h6>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="alert alert-danger" id="loginMessage" role="alert">Login incorrect or host not found.</div>
+                        <div class="d-grid gap-2 col-12 mx-auto">
+                            <button class="btn btn-sm btn-primary" type="button" onclick="location.href='login.php';">Sign In With ${i2b2.UI.cfg.loginIdpAccount}</button>
+                        </div>
+                        <p class="divider-text"><span class="bg-light">OR</span></p>
+                        <form name="loginForm" style="margin:0;padding:0;" onsubmit="i2b2.PM.doLogin(); return false;">
+                            <div class="mb-3">
+                                <label for="loginusr" class="form-label fw-bold">${i2b2.UI.cfg.loginUsernameText}</label>
+                                <input class="form-control form-control-sm" type="text" type="text" name="uname" id="loginusr" value="${i2b2.UI.cfg.loginDefaultUsername}" size="20" maxlength="50" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginpass" class="form-label fw-bold">${i2b2.UI.cfg.loginPasswordText}</label>
+                                <input class="form-control form-control-sm" type="password" name="pword" id="loginpass" value="${i2b2.UI.cfg.loginDefaultPassword}" size="20" maxlength="50" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="logindomain" class="form-label fw-bold">${i2b2.UI.cfg.loginHostText}</label>
+                                <select class="form-select form-select-sm" name="server" id="logindomain">
+                                    <option value="">Loading...</option>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2 col-12 mx-auto">
+                                <button class="btn btn-sm btn-secondary" type="button" id="loginButton" onclick="i2b2.PM.doLogin()">Sign In</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <h6>Create New Account</h6>
+                <div class="card border-0">
+                    <div class="card-body">
+                        <div class="d-grid gap-2 col-12 mx-auto">
+                            <button class="btn btn-sm btn-success" type="button" onclick="location.href='registration/user/';">Register via ${i2b2.UI.cfg.loginIdpAccount}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+`;
 
 // project selection screen
 i2b2.PM.model.html.projDialog = '<div id="i2b2_projects_modal_dialog" style="display:block;">\n' +
