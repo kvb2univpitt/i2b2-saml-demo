@@ -25,7 +25,8 @@ i2b2.UI.cfg = {
     useFloorThreshold: false, /* [Default: false] If true, any result below floorThresholdNumber shows as 'Less Than {floorThresholdNumber}' */
     floorThresholdNumber: 10, /* [Default: 10] Threshold for low number of results */
     floorThresholdText: "Less Than ", // [Default: "Less Than "] Text that is prefixed before floorThresholdNumber (include trailing space)
-    useExpandedLabFlags: false
+    useExpandedLabFlags: false,
+    termsCondition: "Terms & Conditions\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec volutpat lorem. Donec augue lacus, vulputate nec arcu a, iaculis viverra felis. Integer sed suscipit risus. Donec ut mauris efficitur, dignissim sapien eget, accumsan libero. Quisque pretium auctor feugiat. Duis eu vulputate odio, eu aliquam velit. Integer sem leo, sagittis sit amet nibh a, auctor elementum ex. Pellentesque ut massa dapibus, sollicitudin turpis sed, pharetra est. Cras sodales blandit lorem a finibus. Sed nibh mi, euismod ut libero et, hendrerit maximus enim. Cras dignissim feugiat nunc, non fringilla sapien porttitor vel. Nullam lobortis sed sem sed laoreet. Praesent lorem leo, efficitur id viverra in, luctus et lectus. Nunc eros risus, tempus ac iaculis eu, aliquam ac mauris. Donec id risus nisi. Maecenas neque dui, porttitor non porttitor non, tincidunt nec ligula."
 };
 /* End Configuration */
 

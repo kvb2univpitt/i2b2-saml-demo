@@ -173,18 +173,25 @@ i2b2.PM.model.html.loginDialog = `
                                 </select>
                             </div>
                             <div class="d-grid gap-2 col-12 mx-auto">
-                                <button class="btn btn-sm btn-secondary" type="button" id="loginButton" onclick="i2b2.PM.doLogin()">Sign In</button>
+                                <button class="btn btn-sm btn-primary" type="button" id="loginButton" onclick="i2b2.PM.doLogin()">Sign In</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="col-6">
-                <h6>Create New Account</h6>
-                <div class="card border-0">
+                <h6>Sign Up</h6>
+                <div class="card">
                     <div class="card-body">
+                        <div class="mb-3">
+                            <textarea class="w-100" rows="16" readonly="readonly">${i2b2.UI.cfg.termsCondition}</textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="agree" onchange="handleAgreeChbx(this);">
+                            <label class="form-check-label" for="agree">I accept the Terms & Conditions</label>
+                        </div>
                         <div class="d-grid gap-2 col-12 mx-auto">
-                            <button class="btn btn-sm btn-success" type="button" onclick="location.href='registration/user/';">Register via ${i2b2.UI.cfg.loginIdpAccount}</button>
+                            <button class="btn btn-sm btn-success" id="register_btn" type="button" onclick="location.href='registration/user/';" disabled="disabled">Register via ${i2b2.UI.cfg.loginIdpAccount}</button>
                         </div>
                     </div>
                 </div>
