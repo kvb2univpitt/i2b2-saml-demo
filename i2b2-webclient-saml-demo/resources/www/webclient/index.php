@@ -311,6 +311,16 @@ if (!empty($PostBody)) {
                 @import url(assets/mod-treeview.css);
                 @import url(assets/help_viewer.css);
                 @import url(assets/msg_sniffer.css);
+
+                *,
+                *::before,
+                *::after {
+                    box-sizing: content-box;
+                }
+
+                #i2b2_login_modal_dialog * {
+                    box-sizing: border-box;
+                }
             </style>
             <script type="text/javascript" src="js-ext/idle-timer.js"></script>
             <script type="text/javascript" src="js-ext/YUI_DataTable_PasswordCellEditor.js"></script>
@@ -960,7 +970,7 @@ if (!empty($PostBody)) {
                             <a href="JavaScript:showXML('WORK','main','Stack');" class="debug"><img src="assets/images/msg_stack.gif" border="0" width="16" height="16"  alt="Show XML Message Stack" title="Show XML Message Stack" /></a> 
                             <a href="JavaScript:i2b2.WORK.view.main.refreshTree();"><div style="display: inline;" id="refWorkQS"><img width="16" id="refreshWorkImg" border="0" height="16" src="assets/images/refreshButton.gif" alt="Refresh Workplace" title="Refresh Workplace"></div><div style="display: none;" id="refWork2QS"><img width="16" border="0" height="16" src="assets/images/loadera16.gif" alt="Refresh Workplace" title="Refresh Workplace"></div></a> 
 
-                                                                                                                                                    <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
+                                                                                                                                                            <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
                             <a href="JavaScript:i2b2.WORK.view.main.ZoomView();"><img id="wrkZoomImg" width="16" height="16" border="0" src="js-i2b2/cells/WORK/assets/zoom_icon.gif" alt="Resize Workspace" title="Resize Workspace" /></a> </div>
                     </div>
                     <div class="bodyBox">
