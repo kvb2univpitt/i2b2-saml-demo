@@ -147,8 +147,30 @@ XML;
     return $data;
 }
 
+function getUser($username) {
+    global $config_pm_uri;
+
+    $request_body = "<pm:get_user>$username</pm:get_user>";
+
+    $request_xml = getRequestXML($request_body);
+
+    $ch = curl_init($config_pm_uri);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "$request_xml");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $data = curl_exec($ch);
+
+    return $data;
+}
+
 function paramUserExists($username, $xml_response) {
     return preg_match('/<param name="eppn" (.*)>' . $username . '<\/param>/', $xml_response);
+}
+
+function userExists($username, $xml_response) {
+    return preg_match("/<user_name>${username}<\/user_name>/", $xml_response);
 }
 
 function hasErrorStatus($xml_response) {

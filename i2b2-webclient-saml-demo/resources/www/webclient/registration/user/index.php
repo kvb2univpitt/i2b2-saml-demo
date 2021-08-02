@@ -14,8 +14,9 @@ if ($username) {
 
     $full_name = $first_name . ' ' . $last_name;
 
-    $user_exists = paramUserExists($username, getAllUserParams());
-    if ($user_exists) {
+    $user_exists = userExists($username, getUser($username));
+    $user_param_exists = paramUserExists($username, getAllUserParams());
+    if ($user_exists || $user_param_exists) {
         $_SESSION['error_msg'] = "You have already registered.";
     } else {
         $result_status_error = hasErrorStatus(setUser($username, $full_name, $email));
