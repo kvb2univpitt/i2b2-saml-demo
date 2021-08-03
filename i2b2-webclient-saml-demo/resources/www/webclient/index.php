@@ -250,7 +250,7 @@ if (!empty($PostBody)) {
                 function handleAgreeChbx(chbx) {
                     document.getElementById("register_btn").disabled = !chbx.checked;
                 }
-                
+
                 function showAlert(msg) {
                     if (msg.length > 0) {
                         alert(msg);
@@ -649,30 +649,32 @@ if (!empty($PostBody)) {
                 </div>
                 <div class="ft"></div>
             </div>
-            <div id="changepassword-viewer-panel" style="display:none;">
-                <div class="hd">i2b2 Change Password</div>
-                <div class="bd" id="modifier-viewer-body">
-                    <table>
-                        <tr>
-                            <td>Current Password</td>
-                            <td><input type="password" name="curpass" id="curpass"></td>
-                        </tr>
-                        <tr>
-                            <td>New Password</td>
-                            <td><input type="password" name="newpass" id="newpass"></td>
-                        </tr>
-                        <tr>
-                            <td>Confirm New Password</td>
-                            <td><input type="password" name="retypepass" id="retypepass"></td>
-                        </tr>
-                    </table>
-                    <center>
-                        <input type="submit" id="changePassword" name="changePassword" value="OK" onClick="i2b2.PM.changePassword.run();">
-                        <input type="submit" id="changePassword" name="changePassword" value="Cancel" onClick="i2b2.PM.changePassword.hide();">
-                    </center>
+            <?php if (empty($_SESSION["shib-session-id"])) { ?>
+                <div id="changepassword-viewer-panel" style="display:none;">
+                    <div class="hd">i2b2 Change Password</div>
+                    <div class="bd" id="modifier-viewer-body">
+                        <table>
+                            <tr>
+                                <td>Current Password</td>
+                                <td><input type="password" name="curpass" id="curpass"></td>
+                            </tr>
+                            <tr>
+                                <td>New Password</td>
+                                <td><input type="password" name="newpass" id="newpass"></td>
+                            </tr>
+                            <tr>
+                                <td>Confirm New Password</td>
+                                <td><input type="password" name="retypepass" id="retypepass"></td>
+                            </tr>
+                        </table>
+                        <center>
+                            <input type="submit" id="changePassword" name="changePassword" value="OK" onClick="i2b2.PM.changePassword.run();">
+                            <input type="submit" id="changePassword" name="changePassword" value="Cancel" onClick="i2b2.PM.changePassword.hide();">
+                        </center>
+                    </div>
+                    <div class="ft"></div>
                 </div>
-                <div class="ft"></div>
-            </div>
+            <?php } ?>
             <div id="modifier-viewer-panel" style="display:none;">
                 <div class="hd">i2b2 Web Client Modifier</div>
                 <div class="bd" id="modifier-viewer-body">
@@ -720,7 +722,8 @@ if (!empty($PostBody)) {
                     <td align="left" valign="middle"><img id="topBarTitle" border="0" alt="" /></td>
                     <td align="left" valign="middle"><div id="viewMode-Project"></div></td>
                     <td align="right" valign="middle"><div id="viewMode-User"></div></td>
-                    <td align="right" valign="middle"><div id="topBar"> 
+                    <td align="right" valign="middle">
+                        <div id="topBar"> 
                             <span id="menuLogin">
                                 WebClient v1.7.12a &nbsp;|&nbsp; <a id="helpLink" href="Javascript:void(0)" onClick="i2b2.hive.HelpViewer.show();">Help</a>
                             </span>
@@ -736,7 +739,25 @@ if (!empty($PostBody)) {
                                                 &nbsp;|&nbsp;
                                         </span>
                                 --> 
-                                <span id="viewMode-Analysis"> <a href="Javascript:void(0)" onClick="i2b2.hive.MasterView.setViewMode('Analysis');">Analysis Tools</a> <a href="#" onclick="return false;" id="pluginsMenu"><img src="assets/images/p_dropdown.png" align="absbottom" border="0"/></a>&nbsp;|&nbsp; </span> <span id="adminPlugins" style="display:none"> <a href="#" onClick="invokeWCPinstaller();return false;" target="_blank">Install Plugins from i2b2 Gallery</a> &nbsp;|&nbsp; </span> <span id="debugMsgSniffer" style="display:none"> <a href="Javascript:void(0)" onClick="i2b2.hive.MsgSniffer.show();">Message Log</a> &nbsp;|&nbsp; </span> <a id="helpLink" href="Javascript:void(0)" onClick="i2b2.hive.HelpViewer.show();">Help</a> &nbsp;|&nbsp; <span id="changePasswordLink"><a id="helpLink" href="Javascript:void(0)" onClick="i2b2.PM.changePassword.show();">Change Password</a> &nbsp;|&nbsp;</span> <a href="Javascript:void(0);" onClick="i2b2.PM.doLogout();">Logout</a> </div></td>
+                                <span id="viewMode-Analysis">
+                                    <a href="Javascript:void(0)" onClick="i2b2.hive.MasterView.setViewMode('Analysis');">Analysis Tools</a>
+                                    <a href="#" onclick="return false;" id="pluginsMenu"><img src="assets/images/p_dropdown.png" align="absbottom" border="0"/></a>&nbsp;|&nbsp;
+                                </span>
+                                <span id="adminPlugins" style="display:none">
+                                    <a href="#" onClick="invokeWCPinstaller();return false;" target="_blank">Install Plugins from i2b2 Gallery</a> &nbsp;|&nbsp;
+                                </span>
+                                <span id="debugMsgSniffer" style="display:none">
+                                    <a href="Javascript:void(0)" onClick="i2b2.hive.MsgSniffer.show();">Message Log</a> &nbsp;|&nbsp;
+                                </span>
+                                <a id="helpLink" href="Javascript:void(0)" onClick="i2b2.hive.HelpViewer.show();">Help</a> &nbsp;|&nbsp;
+                                <?php if (empty($_SESSION["shib-session-id"])) { ?>
+                                    <span id="changePasswordLink">
+                                        <a id="helpLink" href="Javascript:void(0)" onClick="i2b2.PM.changePassword.show();">Change Password</a> &nbsp;|&nbsp;
+                                    </span>
+                                <?php } ?>
+                                <a href="Javascript:void(0);" onClick="i2b2.PM.doLogout();">Logout</a>
+                        </div>
+                    </td>
                     </span>
                 </tr>
             </table>
@@ -757,17 +778,17 @@ if (!empty($PostBody)) {
                                 <div>Info</div>
                             </div>
                             <div id="guestTabWorkplace" class="tabBox" style="display:None" onClick="i2b2.ONT.view.main.ZoomView();
-                                    i2b2.WORK.view.main.ZoomView()">
+                                        i2b2.WORK.view.main.ZoomView()">
                                 <div>Workplace</div>
                             </div>
                             <div id="guestTabQueries" class="tabBox" style="display:None" onClick="i2b2.ONT.view.main.ZoomView();
-                                    i2b2.CRC.view.history.ZoomView();
-                                    i2b2.CRC.view.history.selectTab('nav')"; >
+                                        i2b2.CRC.view.history.ZoomView();
+                                        i2b2.CRC.view.history.selectTab('nav')"; >
                                 <div>Queries</div>
                             </div>   
                             <div id="guestTabQuerySearch" class="tabBox" style="display:None" onClick="i2b2.ONT.view.main.ZoomView();
-                                    i2b2.CRC.view.history.ZoomView();
-                                    i2b2.CRC.view.history.selectTab('find')"; >
+                                        i2b2.CRC.view.history.ZoomView();
+                                        i2b2.CRC.view.history.selectTab('find')"; >
                                 <div>Find Qry</div>
                             </div>     
                         </div>
@@ -965,31 +986,31 @@ if (!empty($PostBody)) {
                 <div id="wrkWorkplace" style="display:none;">
                     <div class="TopTabs">
                         <div id="WRKguestTabNavigate" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView();
-                                i2b2.ONT.view.main.ZoomView();
-                                i2b2.ONT.view.main.selectTab('nav')">
+                                    i2b2.ONT.view.main.ZoomView();
+                                    i2b2.ONT.view.main.selectTab('nav')">
                             <div>Terms</div>
                         </div>
                         <div id="WRKguestTabFind" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView();
-                                i2b2.ONT.view.main.ZoomView();
-                                i2b2.ONT.view.main.selectTab('find');">
+                                    i2b2.ONT.view.main.ZoomView();
+                                    i2b2.ONT.view.main.selectTab('find');">
                             <div>Find Trm</div>
                         </div>
                         <div id="WRKguestTabInfo" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView();
-                                i2b2.ONT.view.main.ZoomView();
-                                i2b2.ONT.view.main.selectTab('info');">
+                                    i2b2.ONT.view.main.ZoomView();
+                                    i2b2.ONT.view.main.selectTab('info');">
                             <div>Info</div>
                         </div>
                         <div class="tabBox active">
                             <div>Workplace</div>
                         </div>
                         <div id="WRKguestTabQueries" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView();
-                                i2b2.CRC.view.history.ZoomView();
-                                i2b2.CRC.view.history.selectTab('nav')">
+                                    i2b2.CRC.view.history.ZoomView();
+                                    i2b2.CRC.view.history.selectTab('nav')">
                             <div>Queries</div>
                         </div>
                         <div id="WRKguestTabFindQueries" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView();
-                                i2b2.CRC.view.history.ZoomView();
-                                i2b2.CRC.view.history.selectTab('find')">
+                                    i2b2.CRC.view.history.ZoomView();
+                                    i2b2.CRC.view.history.selectTab('find')">
                             <div>Find Qry</div>
                         </div>
                         <div class="opXML"> 
@@ -998,7 +1019,7 @@ if (!empty($PostBody)) {
                             <a href="JavaScript:showXML('WORK','main','Stack');" class="debug"><img src="assets/images/msg_stack.gif" border="0" width="16" height="16"  alt="Show XML Message Stack" title="Show XML Message Stack" /></a> 
                             <a href="JavaScript:i2b2.WORK.view.main.refreshTree();"><div style="display: inline;" id="refWorkQS"><img width="16" id="refreshWorkImg" border="0" height="16" src="assets/images/refreshButton.gif" alt="Refresh Workplace" title="Refresh Workplace"></div><div style="display: none;" id="refWork2QS"><img width="16" border="0" height="16" src="assets/images/loadera16.gif" alt="Refresh Workplace" title="Refresh Workplace"></div></a> 
 
-                                                                                                                                                                                    <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
+                                                                                                                                                                                                                    <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
                             <a href="JavaScript:i2b2.WORK.view.main.ZoomView();"><img id="wrkZoomImg" width="16" height="16" border="0" src="js-i2b2/cells/WORK/assets/zoom_icon.gif" alt="Resize Workspace" title="Resize Workspace" /></a> </div>
                     </div>
                     <div class="bodyBox">
@@ -1012,22 +1033,22 @@ if (!empty($PostBody)) {
                     <div class="TopTabs">
                         <div style="position:absolute;z-index:200;">
                             <div id="CRCguestTabNavigate" class="tabBox" style="display:None" onClick="i2b2.CRC.view.history.ZoomView();
-                                    i2b2.ONT.view.main.ZoomView();
-                                    i2b2.ONT.view.main.selectTab('nav')">
+                                        i2b2.ONT.view.main.ZoomView();
+                                        i2b2.ONT.view.main.selectTab('nav')">
                                 <div>Terms</div>
                             </div>
                             <div id="CRCguestTabFind" class="tabBox" style="display:None" onClick="i2b2.CRC.view.history.ZoomView();
-                                    i2b2.ONT.view.main.ZoomView();
-                                    i2b2.ONT.view.main.selectTab('find');">
+                                        i2b2.ONT.view.main.ZoomView();
+                                        i2b2.ONT.view.main.selectTab('find');">
                                 <div>Find Trm</div>
                             </div>
                             <div id="CRCguestTabInfo" class="tabBox" style="display:None" onClick="i2b2.CRC.view.history.ZoomView();
-                                    i2b2.ONT.view.main.ZoomView();
-                                    i2b2.ONT.view.main.selectTab('info');">
+                                        i2b2.ONT.view.main.ZoomView();
+                                        i2b2.ONT.view.main.selectTab('info');">
                                 <div>Info</div>
                             </div>
                             <div id="CRCguestTabWorkplace" class="tabBox" style="display:None" onClick="i2b2.CRC.view.history.ZoomView();
-                                    i2b2.WORK.view.main.ZoomView()">
+                                        i2b2.WORK.view.main.ZoomView()">
                                 <div>Workplace</div>
                             </div>
                             <div id="crctabNavigate" class="tabBox active" onClick="i2b2.CRC.view.history.selectTab('nav')">
@@ -1139,7 +1160,7 @@ if (!empty($PostBody)) {
                                 <div id="outerTemporalSequenceUI" style="display:none">
                                     <div id="tutorialDiv" class="tutorialClass"> 
                                         <a href="#" onclick="i2b2.CRC.view.QT.toggleTutorial(); return false;"> <span id="tutorialOnOffSpan"> Turn on Tutorial </span> </a> <span id="tutorialText" class="tutorialComponent"></span> <a href="#" id="tutorialShowMeLink" class="tutorialComponent"  onclick="i2b2.CRC.view.QT.runTutorialAtState();
-                                                return false;"> <span id="tutorShowMeText"> Show Me </span> </a>
+                                                    return false;"> <span id="tutorShowMeText"> Show Me </span> </a>
                                     </div>
                                     <p id="temporalSequenceHeaderMessage" class="temporalSequenceMsgHeader">Drop a Concept into the Box to Start Building a Temporal Sequence</p>
                                     <!--<p id="temporalSequenceMessage" class="temporalSequenceMsg"><a href="#" onclick="i2b2.CRC.view.QT.runTutorial(1); return false;">(Show me)</a></p> -->
@@ -1157,7 +1178,7 @@ if (!empty($PostBody)) {
                                             <div id="temporalEvent_0" class="temporalEvent">
                                                 <div class="temporalEventHeader">
                                                     <div class="temporalEventDeleteDiv" style="float:right"><a href="#" onclick="i2b2.CRC.view.QT.deleteEventPressed(this);
-                                                            return false;"><img src="js-i2b2/cells/CRC/assets/QryTool_b_clear.gif" border="0" alt="Remove this Observation" title="Remove this Observation"></a></div>
+                                                                return false;"><img src="js-i2b2/cells/CRC/assets/QryTool_b_clear.gif" border="0" alt="Remove this Observation" title="Remove this Observation"></a></div>
                                                     Observation A
                                                 </div>
                                                 <div id="temporalEvent_0_P0" class="temporalPanel">
@@ -1166,13 +1187,13 @@ if (!empty($PostBody)) {
                                                         <div class="temporalPanelExcludeDiv temporalPanelButton">Exclude</div>
                                                         <div class="temporalPanelDeleteDiv">
                                                             <div class="temporalPanelDeleteButton"><a href="#" onclick="i2b2.CRC.view.QT.deletePanelPressed(this);
-                                                                    return false;"><img src="js-i2b2/cells/CRC/assets/TQryPanel_clear.gif" border="0" alt="Remove this Panel" title="Remove this Panel"></a></div>
+                                                                        return false;"><img src="js-i2b2/cells/CRC/assets/TQryPanel_clear.gif" border="0" alt="Remove this Panel" title="Remove this Panel"></a></div>
                                                         </div>
                                                     </div>
                                                     <div id="temporalEvent_0_P0_content" class="temporalPanelContentDiv"></div>
                                                     <div class="temporalPanelAddDiv">
                                                         <div class="addPanelButton"><a href="#" onclick="i2b2.CRC.view.QT.addPanelPressed(this);
-                                                                return false;"><img src="js-i2b2/cells/CRC/assets/TQryPanel_add.gif" border="0" alt="Add a New Panel" title="Add a New Panel"></a></div>
+                                                                    return false;"><img src="js-i2b2/cells/CRC/assets/TQryPanel_add.gif" border="0" alt="Add a New Panel" title="Add a New Panel"></a></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1187,7 +1208,7 @@ if (!empty($PostBody)) {
                                             <div id="temporalEvent_1" class="temporalEvent">
                                                 <div class="temporalEventHeader">
                                                     <div class="temporalEventDeleteDiv" style="float:right"><a href="#" onclick="i2b2.CRC.view.QT.deleteEventPressed(this);
-                                                            return false;"><img src="js-i2b2/cells/CRC/assets/QryTool_b_clear.gif" border="0" alt="Remove this Observation" title="Remove this Observation"></a></div>
+                                                                return false;"><img src="js-i2b2/cells/CRC/assets/QryTool_b_clear.gif" border="0" alt="Remove this Observation" title="Remove this Observation"></a></div>
                                                     Observation B
                                                 </div>
                                                 <div id="temporalEvent_1_P0" class="temporalPanel">
@@ -1196,13 +1217,13 @@ if (!empty($PostBody)) {
                                                         <div class="temporalPanelExcludeDiv temporalPanelButton">Exclude</div>
                                                         <div class="temporalPanelDeleteDiv">
                                                             <div class="temporalPanelDeleteButton"><a href="#" onclick="i2b2.CRC.view.QT.deletePanelPressed(this);
-                                                                    return false;"><img src="js-i2b2/cells/CRC/assets/TQryPanel_clear.gif" border="0" alt="Remove this Panel" title="Remove this Panel"></a></div>
+                                                                        return false;"><img src="js-i2b2/cells/CRC/assets/TQryPanel_clear.gif" border="0" alt="Remove this Panel" title="Remove this Panel"></a></div>
                                                         </div>
                                                     </div>
                                                     <div id="temporalEvent_1_P0_content" class="temporalPanelContentDiv"></div>
                                                     <div class="temporalPanelAddDiv">
                                                         <div class="addPanelButton"><a href="#" onclick="i2b2.CRC.view.QT.addPanelPressed(this);
-                                                                return false;"><img src="js-i2b2/cells/CRC/assets/TQryPanel_add.gif" border="0" alt="Add a New Panel" title="Add a New Panel"></a></div>
+                                                                    return false;"><img src="js-i2b2/cells/CRC/assets/TQryPanel_add.gif" border="0" alt="Add a New Panel" title="Add a New Panel"></a></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1474,8 +1495,8 @@ if (!empty($PostBody)) {
                         </div>
                         <div id="anaPluginList" oncontextmenu="return false"></div>
                         <div style="background:#667788;height:22px;padding-left:4px;"><span id="PluginGalleryFooter" style="display:none;float:left"><img src="assets/images/p_gallery.png" align="absbottom" style="margin-top:2px;" /> <a href="#" onClick="invokeWCPinstaller();return false;" target="_blank" id="PluginsGalleryLink" style="text-decoration:none;font-size:13px;color:#FFF;" >Click here to view more plugins in i2b2 Gallery...</a></span><span style="float:right;margin-right:5px"><a href="#" onClick="jQuery('#pluginsMenu').qtip('hide');
-                                return false;" style="text-decoration:none;font-size:13px;color:#FFF;" ><img src="assets/images/p_close.png" align="absbottom" border="0" style="margin-top:2px;" /></a> <a href="#" onClick="jQuery('#pluginsMenu').qtip('hide');
-                                        return false;" style="text-decoration:none;font-size:13px;color:#FFF;">Close</a></span></div>
+                                    return false;" style="text-decoration:none;font-size:13px;color:#FFF;" ><img src="assets/images/p_close.png" align="absbottom" border="0" style="margin-top:2px;" /></a> <a href="#" onClick="jQuery('#pluginsMenu').qtip('hide');
+                                            return false;" style="text-decoration:none;font-size:13px;color:#FFF;">Close</a></span></div>
                     </div>
                     <div style="clear:both;"></div>
                 </div>
@@ -1494,7 +1515,7 @@ if (!empty($PostBody)) {
                     <div class="PluginViewBox">
                         <div id="anaPluginViewFrame" oncontextmenu="return false">
                             <div class="initialMsg"><a href="#" style="color:#6677aa" onclick="jQuery('#pluginsMenu').qtip('show');
-                                    return false;">Select a plugin to load</a></div>
+                                        return false;">Select a plugin to load</a></div>
                         </div>
                         <iframe id="anaPluginIFRAME" src="assets/blank.html" style="display:none"></iframe>
                     </div>
