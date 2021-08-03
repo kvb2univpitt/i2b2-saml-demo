@@ -137,14 +137,9 @@ i2b2.PM.model.html.loginDialog = `
 <div id="i2b2_login_modal_dialog" style="display:block;">
     <div class="hd">${i2b2.UI.cfg.loginHeaderText}</div>
     <div class="login-dialog">
-        <div class="row py-3 px-3" id="error_msg" style="display: ${error_msg.length > 0 ? 'block' : 'none'};">
+        <div class="row py-3 px-3" id="message_block" style="display: none;">
             <div class="col-12">
-                <div class="alert alert-danger" role="alert"><h6>${error_msg}</h6></div>
-            </div>
-        </div>
-        <div class="row py-3 px-3" id="success_msg" style="display: ${success_msg.length > 0 ? 'block' : 'none'};">
-            <div class="col-12">
-                <div class="alert alert-success" role="alert"><h6>${success_msg}</h6></div>
+                <div class="h6 alert" id="message" role="alert"></div>
             </div>
         </div>
         <div class="row py-3 px-3">
