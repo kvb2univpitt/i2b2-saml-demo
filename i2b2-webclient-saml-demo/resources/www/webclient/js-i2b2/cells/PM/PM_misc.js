@@ -145,11 +145,13 @@ i2b2.PM.model.html.loginDialog = `
         <div class="row py-3 px-3">
             <div class="col-6">
                 <h6>Sign In</h6>
-                <div class="card bg-light">
+                <div class="card">
                     <div class="card-body">
                         <div class="alert alert-danger" id="loginMessage" role="alert">Login incorrect or host not found.</div>
-                        <div class="d-grid gap-2 col-12 mx-auto">
-                            <button class="btn btn-sm btn-primary" type="button" onclick="location.href='login.php';">Sign In With ${i2b2.UI.cfg.loginIdpAccount}</button>
+                        <div class="d-grid col-12 mx-auto">
+                            <button class="btn btn-sm btn-idp" type="button" onclick="location.href='login.php';">
+                                <img role="img" src="${i2b2.UI.cfg.loginIdpIcon}" alt="${i2b2.UI.cfg.loginIdp}" width="16" height="16" /> Sign In With ${i2b2.UI.cfg.loginIdp}
+                            </button>
                         </div>
                         <p class="divider-text"><span class="bg-light">OR</span></p>
                         <form name="loginForm" style="margin:0;padding:0;" onsubmit="i2b2.PM.doLogin(); return false;">
@@ -168,7 +170,7 @@ i2b2.PM.model.html.loginDialog = `
                                 </select>
                             </div>
                             <div class="d-grid gap-2 col-12 mx-auto">
-                                <button class="btn btn-sm btn-primary" type="button" id="loginButton" onclick="i2b2.PM.doLogin()">Sign In</button>
+                                <button class="btn btn-sm btn-local" type="button" id="loginButton" onclick="i2b2.PM.doLogin()">Sign In</button>
                             </div>
                         </form>
                     </div>
@@ -176,7 +178,7 @@ i2b2.PM.model.html.loginDialog = `
             </div>
             <div class="col-6">
                 <h6>Sign Up</h6>
-                <div class="card">
+                <div class="card bg-light">
                     <div class="card-body">
                         <div class="mb-3">
                             <textarea class="w-100" rows="16" readonly="readonly">${i2b2.UI.cfg.termsCondition}</textarea>
@@ -186,7 +188,9 @@ i2b2.PM.model.html.loginDialog = `
                             <label class="form-check-label" for="agree">I accept the Terms & Conditions</label>
                         </div>
                         <div class="d-grid gap-2 col-12 mx-auto">
-                            <button class="btn btn-sm btn-success" id="register_btn" type="button" onclick="location.href='registration/user/';" disabled="disabled">Register via ${i2b2.UI.cfg.loginIdpAccount}</button>
+                            <button class="btn btn-sm btn-idp" id="register_btn" type="button" onclick="location.href='registration/user/';" disabled="disabled">
+                                <img role="img" src="${i2b2.UI.cfg.loginIdpIcon}" alt="${i2b2.UI.cfg.loginIdp}" width="16" height="16" /> Register via ${i2b2.UI.cfg.loginIdp}
+                            </button>
                         </div>
                     </div>
                 </div>

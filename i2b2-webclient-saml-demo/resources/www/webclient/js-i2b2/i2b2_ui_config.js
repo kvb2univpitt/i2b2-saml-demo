@@ -19,7 +19,8 @@ i2b2.UI.cfg = {
     loginPasswordText: "Password:", /* [Default: "Password:"] Text for the password input of the login box */
     loginDefaultPassword: "demouser", /* [Default: "demouser"] Default text inside the password input */
     loginHostText: "i2b2 Host:", /* [Default: "i2b2 Host:"] Text for the PM cell dropdown of the login box */
-    loginIdpAccount: "SimpleSAMLphp", /* Text for federated login button */
+    loginIdp: "SimpleSAMLphp", /* Text for federated login button */
+    loginIdpIcon: "assets/img/ssplogo-fish-2.svg", /* Location of the 16x16 icon */
     obfuscatedDisplayNumber: 3, /* [Default: 3] Display number after plus/minus for obfuscated results.
      Control the real obfuscation value from server in CRC properties. */
     useFloorThreshold: false, /* [Default: false] If true, any result below floorThresholdNumber shows as 'Less Than {floorThresholdNumber}' */
