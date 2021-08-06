@@ -273,6 +273,9 @@ i2b2.PM._processUserConfig = function (data) {
             }
         } else if (i2b2.PM.model.login_fullname != "") {
             alert("Your account does not have access to any i2b2 projects.");
+            if (i2b2.PM.isSaml) {
+                window.location.href = window.location.href + "/logout.php";
+            }
             //} else if (s == null || s == "") {
             //	alert("The PM Cell is down or the address in the properties file is incorrect.");	
         } else {
