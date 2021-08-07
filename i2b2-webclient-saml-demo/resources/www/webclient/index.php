@@ -256,28 +256,6 @@ if (!empty($PostBody)) {
                         alert(msg);
                     }
                 }
-
-                function setSuccessMessageAlert(msg) {
-                    if (msg.length > 0) {
-                        let alertMsg = document.getElementById("loginMessage");
-                        alertMsg.classList.remove("alert-danger");
-                        alertMsg.classList.add("alert-success");
-                        alertMsg.innerHTML = msg;
-
-                        document.getElementById('message_block').style.display = 'block';
-                    }
-                }
-
-                function setErrorMessageAlert(msg) {
-                    if (msg.length > 0) {
-                        let alertMsg = document.getElementById('loginMessage');
-                        alertMsg.classList.remove('alert-success');
-                        alertMsg.classList.add('alert-danger');
-                        alertMsg.innerHTML = msg;
-
-                        document.getElementById("message_block").style.display = "block";
-                    }
-                }
             </script>
 
             <!-- This turns off debugging messages. Developers - comment this out to turn them back on! -->

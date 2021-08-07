@@ -137,11 +137,6 @@ i2b2.PM.model.html.loginDialog = `
 <div id="i2b2_login_modal_dialog" style="display:block;">
     <div class="hd">${i2b2.UI.cfg.loginHeaderText}</div>
     <div class="login-dialog py-3">
-        <div class="row px-3" id="message_block" style="display: none;">
-            <div class="col-12">
-                <div class="h6 alert alert-danger" id="j" role="alert">something</div>
-            </div>
-        </div>
         <div class="row px-3">
             <div class="col-6">
                 <h6>Sign In</h6>
