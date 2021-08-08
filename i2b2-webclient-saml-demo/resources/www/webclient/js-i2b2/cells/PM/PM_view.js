@@ -404,7 +404,7 @@ i2b2.PM.doLoginDialog = function () {
         if (!i2b2.PM.view.modal.login) {
             i2b2.PM.view.modal.login = new YAHOO.widget.Panel("i2b2_login_modal_dialog", {
                 zindex: 700,
-                width: "700px",
+                width: "350px",
                 fixedcenter: true,
                 constraintoviewport: true,
                 close: false,

@@ -322,7 +322,7 @@ if (!empty($PostBody)) {
                     box-sizing: content-box;
                 }
 
-                #i2b2_login_modal_dialog * {
+                #i2b2_login_modal_dialog *,#signup * {
                     box-sizing: border-box;
                 }
 
@@ -516,6 +516,11 @@ if (!empty($PostBody)) {
                                             i2b2.PM.doLoginDialog();
                                             showAlert("<?php echo isset($success_msg) ? $success_msg : ''; ?>");
                                             showAlert("<?php echo isset($error_msg) ? $error_msg : ''; ?>");
+
+                                            document.getElementById('terms').innerHTML = `${i2b2.UI.cfg.termsCondition}`;
+                                            document.getElementById('loginIdp').innerHTML = `${i2b2.UI.cfg.loginIdp}`;
+                                            document.getElementById('loginIdpIcon').src = `${i2b2.UI.cfg.loginIdpIcon}`;
+                                            document.getElementById('loginIdpIcon').alt = `${i2b2.UI.cfg.loginIdp}`;
         <?php
     } else {
         ?>
@@ -1018,7 +1023,7 @@ if (!empty($PostBody)) {
                             <a href="JavaScript:showXML('WORK','main','Stack');" class="debug"><img src="assets/images/msg_stack.gif" border="0" width="16" height="16"  alt="Show XML Message Stack" title="Show XML Message Stack" /></a> 
                             <a href="JavaScript:i2b2.WORK.view.main.refreshTree();"><div style="display: inline;" id="refWorkQS"><img width="16" id="refreshWorkImg" border="0" height="16" src="assets/images/refreshButton.gif" alt="Refresh Workplace" title="Refresh Workplace"></div><div style="display: none;" id="refWork2QS"><img width="16" border="0" height="16" src="assets/images/loadera16.gif" alt="Refresh Workplace" title="Refresh Workplace"></div></a> 
 
-                                                                                                                                                                                                                            <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
+                                                                                                                                                                                                                                                                    <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
                             <a href="JavaScript:i2b2.WORK.view.main.ZoomView();"><img id="wrkZoomImg" width="16" height="16" border="0" src="js-i2b2/cells/WORK/assets/zoom_icon.gif" alt="Resize Workspace" title="Resize Workspace" /></a> </div>
                     </div>
                     <div class="bodyBox">
@@ -2133,6 +2138,35 @@ if (!empty($PostBody)) {
                 <!-- <div id="main.debug" style="position: absolute; top: 300px; left: 300px; color: red"> <p></p><br> </div> --> 
                 <!-- ############### <Draggable Splitter> ############### --> 
             </div>
+            <!-- Modal -->
+            <div class="modal fade" id="signup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="signUpLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="signUpLabel">Sign Up</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <textarea class="w-100" rows="18" readonly="readonly" id="terms" style="resize: none;"></textarea>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="agree" onchange="handleAgreeChbx(this);">
+                                        <label class="form-check-label" for="agree">I accept the Terms & Conditions</label>
+                                    </div>
+                                    <div class="d-grid col-12 mx-auto">
+                                        <button class="btn btn-sm btn-idp" id="register_btn" type="button" onclick="location.href = 'registration/user/';" disabled="disabled">
+                                            <img role="img" id="loginIdpIcon" src="#" alt="" width="16" height="16" />Register via <span id="loginIdp"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="assets/bootstrap/js/bootstrap.bundle.js"></script>
         </body>
     </html>
     <?php
