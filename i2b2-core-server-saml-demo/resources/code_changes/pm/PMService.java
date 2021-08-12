@@ -27,8 +27,11 @@ import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamException;
 import org.apache.axiom.om.OMElement;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -165,8 +168,10 @@ public class PMService {
      * @throws PortletServiceUnavailableException
      * @throws Exception
      */
-    public OMElement getServices(OMElement getPMDataElement)
-            throws I2B2Exception {
+    public OMElement getServices(OMElement getPMDataElement) throws I2B2Exception {
+
+        MessageContext messageContext = MessageContext.getCurrentMessageContext();
+        HttpServletRequest req = (HttpServletRequest) messageContext.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
 
         /*
 
@@ -239,7 +244,7 @@ public class PMService {
             //er.setInputString(requestElementString);
             log.debug("begin setRequestHandler, my servicesMsg: " + servicesMsg);
 
-            er.setRequestHandler(new ServicesHandler(servicesMsg));
+            er.setRequestHandler(new ServicesHandler(servicesMsg, req));
             log.debug("middle setRequestHandler");
 
             log.debug("end setRequestHandler");
