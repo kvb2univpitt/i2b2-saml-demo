@@ -527,8 +527,8 @@ if (!empty($PostBody)) {
                                             i2b2.PM.isSaml = true;
                                             i2b2.PM.doLoginDialog();
                                             $('i2b2_login_modal_dialog').hide();
-                                            $('loginusr').value = '<?php echo 'saml:' . $_SESSION["eppn"]; ?>';
-                                            $('loginpass').value = '<?php echo 'saml:' . $_SESSION["shib-session-id"]; ?>';
+                                            $('loginusr').value = '<?php echo $_SESSION["eppn"]; ?>';
+                                            $('loginpass').value = '<?php echo $_SESSION["shib-session-id"]; ?>';
                                             $('loginButton').click();
         <?php
     }
@@ -1023,7 +1023,7 @@ if (!empty($PostBody)) {
                             <a href="JavaScript:showXML('WORK','main','Stack');" class="debug"><img src="assets/images/msg_stack.gif" border="0" width="16" height="16"  alt="Show XML Message Stack" title="Show XML Message Stack" /></a> 
                             <a href="JavaScript:i2b2.WORK.view.main.refreshTree();"><div style="display: inline;" id="refWorkQS"><img width="16" id="refreshWorkImg" border="0" height="16" src="assets/images/refreshButton.gif" alt="Refresh Workplace" title="Refresh Workplace"></div><div style="display: none;" id="refWork2QS"><img width="16" border="0" height="16" src="assets/images/loadera16.gif" alt="Refresh Workplace" title="Refresh Workplace"></div></a> 
 
-                                                                                                                                                                                                                                                                    <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
+                                                                                                                                                                                                                                                                        <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
                             <a href="JavaScript:i2b2.WORK.view.main.ZoomView();"><img id="wrkZoomImg" width="16" height="16" border="0" src="js-i2b2/cells/WORK/assets/zoom_icon.gif" alt="Resize Workspace" title="Resize Workspace" /></a> </div>
                     </div>
                     <div class="bodyBox">
