@@ -11,7 +11,6 @@
  *
  * Contributors:
  * 		Lori Phillips
- * 		Kevin V. Bui - added SAML authentication
  */
 package edu.harvard.i2b2.pm.delegate;
 
@@ -176,18 +175,16 @@ public class ServicesHandler extends RequestHandler {
             while (it.hasNext()) {
                 user = (UserType) it.next();
 
-                if (!password.startsWith("saml:")) {
-                    //Check the password
-                    if (user.getPassword().getValue().startsWith("@")) {
-                        if (!(user.getPassword().getValue().substring(1)).equals(password)) {
-                            saveLoginAttempt(pmDb, username, "BADPASSWORD");
-                            throw new Exception("Current password is incorrect");
-                        }
-                    } else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword(password))) {
+                //Check the password
+                if (user.getPassword().getValue().startsWith("@")) {
+                    if (!(user.getPassword().getValue().substring(1)).equals(password)) {
                         saveLoginAttempt(pmDb, username, "BADPASSWORD");
                         throw new Exception("Current password is incorrect");
-
                     }
+                } else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword(password))) {
+                    saveLoginAttempt(pmDb, username, "BADPASSWORD");
+                    throw new Exception("Current password is incorrect");
+
                 }
             }
             if (user == null) {
@@ -203,6 +200,7 @@ public class ServicesHandler extends RequestHandler {
     }
 
     private boolean verifySession(PMDbDao pmDb, int timeout, String sessionId, String userId) throws Exception {
+
         List response = pmDb.getSession(userId, sessionId);
 
         //SessionKey k=SessionKey.Decrypt(sessionKey);
@@ -2225,4 +2223,3 @@ public class ServicesHandler extends RequestHandler {
     }
 
 }
-
