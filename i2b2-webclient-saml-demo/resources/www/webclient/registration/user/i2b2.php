@@ -69,23 +69,6 @@ function getRequestXML($request_body) {
     return $xml;
 }
 
-function getAllUserParams() {
-    global $config_pm_uri;
-
-    $request_body = '<pm:get_all_user_param></pm:get_all_user_param>';
-    $request_xml = getRequestXML($request_body);
-
-    $ch = curl_init($config_pm_uri);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $request_xml);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $data = curl_exec($ch);
-
-    return $data;
-}
-
 function setUser($username, $full_name, $email, $status = 'A', $password = 'demouser') {
     global $config_pm_uri;
 
@@ -165,8 +148,13 @@ function getUser($username) {
     return $data;
 }
 
-function paramUserExists($username, $xml_response) {
-    return preg_match('/<param name="eppn" (.*)>' . $username . '<\/param>/', $xml_response);
+function setUserAuthenticationToSAML($username) {
+    $param_type = 'T';
+    $param_status = 'A';
+    $param_name = 'authentication_method';
+    $param_value = 'SAML';
+
+    return setUserParam($username, $param_type, $param_status, $param_name, $param_value);
 }
 
 function userExists($username, $xml_response) {
