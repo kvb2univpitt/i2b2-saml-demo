@@ -16,15 +16,14 @@ if ($username) {
     $full_name = $first_name . ' ' . $last_name;
 
     $user_exists = userExists($username, getUser($username));
-    $user_param_exists = paramUserExists($username, getAllUserParams());
-    if ($user_exists || $user_param_exists) {
+    if ($user_exists) {
         $_SESSION['error_msg'] = "You have already registered.";
     } else {
         $result_status_error = hasErrorStatus(setUser($username, $full_name, $email));
         if ($result_status_error) {
             $_SESSION['error_msg'] = "Sorry.  We are unable to sign you up at this time.  Please contact the admin.";
         } else {
-            setUserParam($username, "T", "A", "eppn", $username);
+            setUserAuthenticationToSAML($username);
 
             $_SESSION['success_msg'] = "Thank you for signing up!  We will contact you after your registration has been reviewed.";
         }

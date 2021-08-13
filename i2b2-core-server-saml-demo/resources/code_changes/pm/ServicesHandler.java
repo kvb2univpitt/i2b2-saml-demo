@@ -11,7 +11,6 @@
  *
  * Contributors:
  * 		Lori Phillips
- * 		Kevin V. Bui - added SAML authentication
  */
 package edu.harvard.i2b2.pm.delegate;
 
@@ -60,6 +59,7 @@ import java.net.InetAddress;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -77,6 +77,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBElement;
 import org.jboss.as.controller.client.ModelControllerClient;
@@ -89,11 +90,23 @@ public class ServicesHandler extends RequestHandler {
     private ProjectType projectInfo = null;
     private ServicesMessage getServicesMsg = null;
 
-    public ServicesHandler(ServicesMessage servicesMsg) throws I2B2Exception {
+    private final HttpServletRequest req;
+
+    public ServicesHandler(ServicesMessage servicesMsg, HttpServletRequest req) throws I2B2Exception {
+        this.req = req;
         log.debug("Setting the servicesMsg");
 
         getServicesMsg = servicesMsg;
         //setDbInfo(servicesMsg.getRequestMessageType().getMessageHeader());
+    }
+
+    private void addParamsFromHeaders(Hashtable params) {
+        Enumeration<String> enuStr = req.getHeaderNames();
+        while (enuStr.hasMoreElements()) {
+            String key = enuStr.nextElement();
+            Object obj = req.getHeader(key);
+            params.put(key, obj);
+        }
     }
 
     private void saveLoginAttempt(PMDbDao pmDb, String username, String attempt) {
@@ -141,7 +154,6 @@ public class ServicesHandler extends RequestHandler {
 
             // Handle all internal classnames.  Also for backward compatibility need to call it NTLM.
             String classname = "edu.harvard.i2b2.pm.util.SecurityAuthentication" + param.get("authentication_method");
-
             ClassLoader classLoader = ServicesHandler.class.getClassLoader();
 
             try {
@@ -176,18 +188,16 @@ public class ServicesHandler extends RequestHandler {
             while (it.hasNext()) {
                 user = (UserType) it.next();
 
-                if (!password.startsWith("saml:")) {
-                    //Check the password
-                    if (user.getPassword().getValue().startsWith("@")) {
-                        if (!(user.getPassword().getValue().substring(1)).equals(password)) {
-                            saveLoginAttempt(pmDb, username, "BADPASSWORD");
-                            throw new Exception("Current password is incorrect");
-                        }
-                    } else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword(password))) {
+                //Check the password
+                if (user.getPassword().getValue().startsWith("@")) {
+                    if (!(user.getPassword().getValue().substring(1)).equals(password)) {
                         saveLoginAttempt(pmDb, username, "BADPASSWORD");
                         throw new Exception("Current password is incorrect");
-
                     }
+                } else if (!user.getPassword().getValue().equals(PMUtil.getInstance().getHashedPassword(password))) {
+                    saveLoginAttempt(pmDb, username, "BADPASSWORD");
+                    throw new Exception("Current password is incorrect");
+
                 }
             }
             if (user == null) {
@@ -203,6 +213,7 @@ public class ServicesHandler extends RequestHandler {
     }
 
     private boolean verifySession(PMDbDao pmDb, int timeout, String sessionId, String userId) throws Exception {
+
         List response = pmDb.getSession(userId, sessionId);
 
         //SessionKey k=SessionKey.Decrypt(sessionKey);
@@ -300,6 +311,8 @@ public class ServicesHandler extends RequestHandler {
             }
 
             Hashtable params = new Hashtable();
+            addParamsFromHeaders(params);
+
             //First get all the params for the user params
             UserType userType = new UserType();
             userType.setUserName(rmt.getUsername());
@@ -2225,4 +2238,3 @@ public class ServicesHandler extends RequestHandler {
     }
 
 }
-

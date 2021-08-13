@@ -11,7 +11,6 @@
  *
  * Contributors:
  *     Mike Mendis - initial API and implementation
- *     Kevin V. Bui - added SAML authentication
  */
 package edu.harvard.i2b2.pm.ws;
 
@@ -170,6 +169,7 @@ public class PMService {
      * @throws Exception
      */
     public OMElement getServices(OMElement getPMDataElement) throws I2B2Exception {
+
         MessageContext messageContext = MessageContext.getCurrentMessageContext();
         HttpServletRequest req = (HttpServletRequest) messageContext.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
 
@@ -225,7 +225,7 @@ public class PMService {
         log.debug("Received Request PM Element " + outString);
 
         log.debug("Begin getting servicesMsg");
-        ServicesMessage servicesMsg = new ServicesMessage(getPMDataElement.toString(), req);
+        ServicesMessage servicesMsg = new ServicesMessage(getPMDataElement.toString());
         long waitTime = 0;
 
         if ((servicesMsg.getRequestMessageType() != null) && (servicesMsg.getRequestMessageType().getRequestHeader() != null)) {
@@ -244,7 +244,7 @@ public class PMService {
             //er.setInputString(requestElementString);
             log.debug("begin setRequestHandler, my servicesMsg: " + servicesMsg);
 
-            er.setRequestHandler(new ServicesHandler(servicesMsg));
+            er.setRequestHandler(new ServicesHandler(servicesMsg, req));
             log.debug("middle setRequestHandler");
 
             log.debug("end setRequestHandler");
@@ -320,4 +320,3 @@ public class PMService {
 
     }
 }
-
