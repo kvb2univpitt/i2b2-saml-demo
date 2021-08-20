@@ -141,35 +141,38 @@ i2b2.PM.model.html.loginDialog = `
             <form name="loginForm" style="margin:0;padding:0;" onsubmit="i2b2.PM.doLogin(); return false;">
                 <div class="mb-3">
                     <label for="logindomain" class="form-label fw-bold">${i2b2.UI.cfg.loginHostText}</label>
-                    <select class="form-select form-select-sm" name="server" id="logindomain">
+                    <select class="form-select form-select-sm" name="server" id="logindomain" onchange="handleHostSelectChange(this);">
                         <option value="">Loading...</option>
                     </select>
                 </div>
                 <div class="card bg-light">
                     <div class="card-body">
-                        <div class="d-grid col-12 mx-auto">
-                            <button class="btn btn-sm btn-idp" type="button" onclick="location.href='login.php';">
-                                <img role="img" src="${i2b2.UI.cfg.loginIdpIcon}" alt="${i2b2.UI.cfg.loginIdp}" width="16" height="16" /> Sign In With ${i2b2.UI.cfg.loginIdp}
-                            </button>
+                        <div class="federated_login">
+                            <div class="d-grid col-12 mx-auto">
+                                <button class="btn btn-sm btn-idp" type="button" onclick="location.href='login.php';">
+                                    <img role="img" src="${i2b2.UI.cfg.loginIdpIcon}" alt="${i2b2.UI.cfg.loginIdp}" width="16" height="16" /> Sign In With ${i2b2.UI.cfg.loginIdp}
+                                </button>
+                            </div>
                         </div>
-                        <p class="divider-text"><span class="bg-light">OR</span></p>
-                        <div class="mb-3">
-                            <label for="loginusr" class="form-label fw-bold">${i2b2.UI.cfg.loginUsernameText}</label>
-                            <input class="form-control form-control-sm" type="text" type="text" name="uname" id="loginusr" value="${i2b2.UI.cfg.loginDefaultUsername}" size="20" maxlength="50" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="loginpass" class="form-label fw-bold">${i2b2.UI.cfg.loginPasswordText}</label>
-                            <input class="form-control form-control-sm" type="password" name="pword" id="loginpass" value="${i2b2.UI.cfg.loginDefaultPassword}" size="20" maxlength="50" />
-                        </div>
-
-                        <div class="d-grid col-12 mx-auto">
-                            <button class="btn btn-sm btn-local" type="button" id="loginButton" onclick="i2b2.PM.doLogin()">Sign In</button>
+                        <p class="divider-text federated_local_login"><span class="bg-light">OR</span></p>
+                        <div class="local_login">
+                            <div class="mb-3">
+                                <label for="loginusr" class="form-label fw-bold">${i2b2.UI.cfg.loginUsernameText}</label>
+                                <input class="form-control form-control-sm" type="text" type="text" name="uname" id="loginusr" value="${i2b2.UI.cfg.loginDefaultUsername}" size="20" maxlength="50" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginpass" class="form-label fw-bold">${i2b2.UI.cfg.loginPasswordText}</label>
+                                <input class="form-control form-control-sm" type="password" name="pword" id="loginpass" value="${i2b2.UI.cfg.loginDefaultPassword}" size="20" maxlength="50" />
+                            </div>
+                            <div class="d-grid col-12 mx-auto">
+                                <button class="btn btn-sm btn-local" type="button" id="loginButton" onclick="i2b2.PM.doLogin()">Sign In</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
-        <div class="pb-3 px-3">Don't have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#signup">Sign Up!</a></div>
+        <div class="pb-3 px-3 user_reg">Don't have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#signup">Sign Up!</a></div>
     </div>
 </div>
 `;

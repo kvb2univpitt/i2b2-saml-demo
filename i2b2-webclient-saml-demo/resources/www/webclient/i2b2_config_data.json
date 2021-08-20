@@ -1,0 +1,46 @@
+{
+    "urlProxy": "index.php",
+    "urlFramework": "js-i2b2\/",
+    "startZoomed": true,
+    "lstDomains": [
+        {
+            "domain": "i2b2demo",
+            "name": "SamlDemo",
+            "allowAnalysis": true,
+            "urlCellPM": "https:\/\/localhost\/webclient\/i2b2\/services\/PMService\/",
+            "authenticationMethod": "saml",
+            "loginTypes": [
+                "local",
+                "federated"
+            ],
+            "showRegistration": true,
+            "installer": "\/webclient\/plugin_installer\/",
+            "debug": true
+        },
+        {
+            "domain": "i2b2demo",
+            "name": "LocalDemo",
+            "allowAnalysis": true,
+            "urlCellPM": "https:\/\/localhost\/webclient\/i2b2\/services\/PMService\/",
+            "authenticationMethod": "",
+            "loginTypes": [
+                "local"
+            ],
+            "showRegistration": true,
+            "installer": "\/webclient\/plugin_installer\/",
+            "debug": true
+        },
+        {
+            "domain": "i2b2demo",
+            "name": "HarvardDemo",
+            "allowAnalysis": true,
+            "urlCellPM": "http:\/\/services.i2b2.org\/i2b2\/services\/PMService\/",
+            "authenticationMethod": "",
+            "loginTypes": [
+                "local"
+            ],
+            "showRegistration": false,
+            "debug": true
+        }
+    ]
+}

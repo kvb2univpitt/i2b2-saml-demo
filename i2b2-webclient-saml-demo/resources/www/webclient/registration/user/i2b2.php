@@ -2,6 +2,8 @@
 
 require_once('config.php');
 
+$i2b2_config_data = json_decode(file_get_contents("../../../i2b2_config_data.json"), true);
+
 function getRequestTemplate() {
     return <<<XML
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -53,6 +55,38 @@ function getRequestTemplate() {
     </message_body>
 </i2b2:request>
 XML;
+}
+
+function getUrlCellPM($hostname) {
+    global $i2b2_config_data;
+
+    $pm_uri = '';
+    if ($i2b2_config_data) {
+        foreach ($i2b2_config_data['lstDomains'] as $domain) {
+            if (strcmp($domain['name'], $hostname) === 0) {
+                $pm_uri = $domain['urlCellPM'];
+                break;
+            }
+        }
+    }
+
+    return $pm_uri;
+}
+
+function getAuthenticationMethod($hostname) {
+    global $i2b2_config_data;
+
+    $authMethod = '';
+    if ($i2b2_config_data) {
+        foreach ($i2b2_config_data['lstDomains'] as $domain) {
+            if (strcmp($domain['name'], $hostname) === 0) {
+                $authMethod = $domain['authenticationMethod'];
+                break;
+            }
+        }
+    }
+
+    return $authMethod;
 }
 
 function getRequestXML($request_body) {
