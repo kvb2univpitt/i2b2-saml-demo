@@ -86,7 +86,7 @@ docker run -d --name=i2b2-idp-saml-demo \
 -p 8080:8080 \
 -p 8443:8443 \
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser \
-kvb2univpitt/i2b2-idp-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-idp-saml-demo:v1.2021.8
 ```
 
 Windows:
@@ -97,7 +97,7 @@ docker run -d --name=i2b2-idp-saml-demo ^
 -p 8080:8080 ^
 -p 8443:8443 ^
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser ^
-kvb2univpitt/i2b2-idp-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-idp-saml-demo:v1.2021.8
 ```
 
 ## Build the Image

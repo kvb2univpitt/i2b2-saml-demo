@@ -54,7 +54,7 @@ docker run -d --name=i2b2-idp-saml-demo \
 -p 8080:8080 \
 -p 8443:8443 \
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser \
-kvb2univpitt/i2b2-idp-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-idp-saml-demo:v1.2021.8
 ```
 
 ###### Windows:
@@ -65,7 +65,7 @@ docker run -d --name=i2b2-idp-saml-demo ^
 -p 8080:8080 ^
 -p 8443:8443 ^
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser ^
-kvb2univpitt/i2b2-idp-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-idp-saml-demo:v1.2021.8
 ```
 
 **Run i2b2-data-saml-demo container:**
@@ -77,7 +77,7 @@ docker run -d --name=i2b2-data-saml-demo \
 --network i2b2-saml-demo-net \
 -e POSTGRESQL_ADMIN_PASSWORD=demouser \
 -p 5432:5432 \
-kvb2univpitt/i2b2-data-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-data-saml-demo:v1.2021.8
 ```
 
 ###### Windows:
@@ -87,7 +87,7 @@ docker run -d --name=i2b2-data-saml-demo ^
 --network i2b2-saml-demo-net ^
 -e POSTGRESQL_ADMIN_PASSWORD=demouser ^
 -p 5432:5432 ^
-kvb2univpitt/i2b2-data-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-data-saml-demo:v1.2021.8
 ```
 
 **Run i2b2-core-server-saml-demo container:**
@@ -98,7 +98,7 @@ kvb2univpitt/i2b2-data-saml-demo:v1.2021.7
 docker run -d --name=i2b2-core-server-saml-demo \
 --network i2b2-saml-demo-net \
 -p 9090:9090 \
-kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.8
 ```
 
 ###### Windows:
@@ -107,7 +107,7 @@ kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.7
 docker run -d --name=i2b2-core-server-saml-demo ^
 --network i2b2-saml-demo-net ^
 -p 9090:9090 ^
-kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.8
 ```
 
 **Run i2b2-webclient-saml-demo container:**
@@ -118,7 +118,7 @@ kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.7
 docker run -d --name=i2b2-webclient-saml-demo \
 --network i2b2-saml-demo-net \
 -p 80:80 -p 443:443 \
-kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.8
 ```
 
 ###### Windows:
@@ -127,7 +127,7 @@ kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.7
 docker run -d --name=i2b2-webclient-saml-demo ^
 --network i2b2-saml-demo-net ^
 -p 80:80 -p 443:443 ^
-kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.8
 ```
 
 ### URLs

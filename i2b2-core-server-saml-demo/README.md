@@ -42,7 +42,7 @@ Linux / macOS:
 docker run -d --name=i2b2-core-server-saml-demo \
 --network i2b2-saml-demo-net \
 -p 9090:9090 \
-kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.8
 ```
 
 Windows:
@@ -51,7 +51,7 @@ Windows:
 docker run -d --name=i2b2-core-server-saml-demo ^
 --network i2b2-saml-demo-net ^
 -p 9090:9090 ^
-kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.7
+kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.8
 ```
 
 ## Build the Image
