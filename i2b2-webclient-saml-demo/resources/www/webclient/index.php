@@ -801,7 +801,7 @@ if (!empty($PostBody)) {
                 <!-- ############### <ONT View> ############### -->
                 <div id="ontMainBox" style="display:none">
                     <div id="ontTopTabs">
-                        <div style="position:absolute;z-index:200;">
+                        <div style="z-index:200;">
                             <div id="tabNavigate" class="tabBox active" onClick="i2b2.ONT.view.main.selectTab('nav')">
                                 <div>Terms</div>
                             </div>
