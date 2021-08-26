@@ -13,7 +13,13 @@ if ($username) {
     $last_name = filter_input(INPUT_SERVER, 'AJP_sn', FILTER_SANITIZE_STRING);
     $email = filter_input(INPUT_SERVER, 'AJP_mail', FILTER_SANITIZE_STRING);
 
-    $full_name = $first_name . ' ' . $last_name;
+    // create full name from first and last name
+    $full_name = trim($first_name . ' ' . $last_name);
+
+    // set full name to username if first name and last name don't exists
+    if (strlen($full_name) == 0) {
+        $full_name = $username;
+    }
 
     $user_exists = userExists($username, getUser($username));
     if ($user_exists) {
