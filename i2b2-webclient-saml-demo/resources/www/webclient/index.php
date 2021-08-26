@@ -669,6 +669,18 @@ if (!empty($PostBody)) {
                     [].forEach.call(document.getElementsByClassName('user_reg'), e => e.style.display = showUserReg ? 'block' : 'none');
 
                     document.getElementById("hostName").value = hostName;
+
+                    if (isSamlSignUp) {
+                        document.getElementById("signup-dialog").classList.remove("modal-lg");
+
+                        document.getElementById("terms-registration").classList.remove("col-6");
+                        document.getElementById("terms-registration").classList.add("col-12");
+                    } else {
+                        document.getElementById("signup-dialog").classList.add("modal-lg");
+
+                        document.getElementById("terms-registration").classList.remove("col-12");
+                        document.getElementById("terms-registration").classList.add("col-6");
+                    }
                 }
             </script>
         </head>
@@ -2171,7 +2183,7 @@ if (!empty($PostBody)) {
             </div>
             <!-- Modal -->
             <div class="modal fade" id="signup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="signUpLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog" id="signup-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="signUpLabel">Sign Up</h5>
@@ -2180,63 +2192,61 @@ if (!empty($PostBody)) {
                         <div class="modal-body">
                             <div class="card border-0">
                                 <div class="card-body">
-                                    <div id="agreement">
-                                        <div class="mb-3">
-                                            <textarea class="w-100" rows="18" readonly="readonly" id="terms" style="resize: none;"></textarea>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="agree" onchange="handleAgreeChbx(this);">
-                                            <label class="form-check-label" for="agree">I accept the Terms & Conditions</label>
-                                        </div>
-                                    </div>
-                                    <div class="card bg-light local_signup">
-                                        <div class="card-body">
-                                            <form class="needs-validation" action="registration/user/local/" method="post" novalidate>
-                                                <input type="hidden" id="hostName" name="hostName" value="" />
-                                                <div class="row g-3">
-                                                    <div class="col-sm-6">
-                                                        <label for="firstName" class="form-label">First name</label>
-                                                        <input type="text" class="form-control form-control-sm" id="firstName" name="firstName" required="required" value="" />
-                                                        <div class="invalid-feedback">First name is required.</div>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <label for="lastName" class="form-label">Last name</label>
-                                                        <input type="text" class="form-control form-control-sm" id="lastName" name="lastName" required="required" value="" />
-                                                        <div class="invalid-feedback">Last name is required.</div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <label for="email" class="form-label">email</label>
-                                                        <div class="input-group has-validation">
-                                                            <input type="email" class="form-control form-control-sm" id="email" name="email" required="required" value="" />
-                                                            <div class="invalid-feedback">Email is required.</div>
+                                    <form id="registration" action="registration/user/local/" method="post">
+                                        <div class="row">
+                                            <div class="col-6 local_signup">
+                                                <div class="card bg-light">
+                                                    <div class="card-body">
+                                                        <input type="hidden" id="hostName" name="hostName" value="" />
+                                                        <div class="row g-2">
+                                                            <div class="col-sm-6">
+                                                                <label for="firstName" class="form-label">First name:</label>
+                                                                <input type="text" class="form-control form-control-sm" id="firstName" name="firstName" value="" required="required" />
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="lastName" class="form-label">Last name:</label>
+                                                                <input type="text" class="form-control form-control-sm" id="lastName" name="lastName" value="" required="required" />
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <label for="email" class="form-label">Email:</label>
+                                                                <input type="email" class="form-control form-control-sm" id="email" name="email" value="" required="required" />
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <label for="username" class="form-label">Username:</label>
+                                                                <input type="text" class="form-control form-control-sm" id="username" name="username" value="" required="required" />
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <label for="password" class="form-label">Password:</label>
+                                                                <input type="password" class="form-control form-control-sm mb-0" id="password" name="password" value="" required="required" />
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <label for="confirmPassword" class="form-label">Confirm Password:</label>
+                                                                <input type="password" class="form-control form-control-sm mb-0" id="confirmPassword" name="confirmPassword" value="" required="required" />
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <label for="username" class="form-label">Username</label>
-                                                        <div class="input-group has-validation">
-                                                            <input type="text" class="form-control form-control-sm" id="username" name="username" required="required" value="" />
-                                                            <div class="invalid-feedback">Username is required.</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <label for="password" class="form-label">Password</label>
-                                                        <div class="input-group has-validation">
-                                                            <input type="password" class="form-control form-control-sm" id="password" name="password" required="required" value="" />
-                                                            <div class="invalid-feedback">Password is required.</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <button class="w-100 btn btn-sm btn-primary mt-4 register_btn" type="submit" disabled="disabled">Sign Up</button>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
+                                            <div class="col-6" id="terms-registration">
+                                                <div class="mb-3">
+                                                    <textarea class="w-100" id="terms" rows="16" readonly="readonly" style="resize: none;"></textarea>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label" for="agree-local">
+                                                        <input class="form-check-input" type="checkbox" id="agree-local" name="agree" onchange="handleAgreeChbx(this);" /> I accept the Terms & Conditions
+                                                    </label>
+                                                </div>
+                                                <div class="col-12 local_signup">
+                                                    <button class="w-100 btn btn-sm btn-primary mt-4 register_btn" type="submit" disabled="disabled">Sign Up</button>
+                                                </div>
+                                                <div class="d-grid col-12 mx-auto saml_signup">
+                                                    <button class="btn btn-sm btn-idp saml_signup register_btn mt-3" type="button" onclick="location.href = 'registration/user/federated/';" disabled="disabled">
+                                                        <img role="img" id="loginIdpIcon" src="#" alt="" width="16" height="16" />Register via <span id="loginIdp"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="d-grid col-12 mx-auto">
-                                        <button class="btn btn-sm btn-idp saml_signup register_btn" type="button" onclick="location.href = 'registration/user/federated/';" disabled="disabled">
-                                            <img role="img" id="loginIdpIcon" src="#" alt="" width="16" height="16" />Register via <span id="loginIdp"></span>
-                                        </button>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -2244,25 +2254,70 @@ if (!empty($PostBody)) {
                 </div>
             </div>
             <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="assets/jquery/jquery-3.6.0.min.js"></script>
+            <script src="assets/jquery-validation/jquery.validate.min.js"></script>
             <script>
-                (function () {
-                    'use strict'
-                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                    var forms = document.querySelectorAll('.needs-validation')
+                $.noConflict();
+                jQuery(document).ready(function($) {
+                    $("#registration").validate({
+                        rules: {
+                            firstName: "required",
+                            lastName: "required",
+                            email: {
+                                required: true,
+                                email: true
+                            },
+                            username: {
+                                required: true,
+                                minlength: 2
+                            },
+                            password: {
+                                required: true,
+                                minlength: 5
+                            },
+                            confirmPassword: {
+                                required: true,
+                                minlength: 5,
+                                equalTo: "#password"
+                            },
+                            agree: "required"
+                        },
+                        messages: {
+                            firstName: "Please provide your first name.",
+                            lastName: "Please provide your last name.",
+                            email: "Please provide a valid email.",
+                            username: {
+                                required: "Please provide your username.",
+                                minlength: "Your username must consist of at least 4 characters."
+                            },
+                            password: {
+                                required: "Please provide a password.",
+                                minlength: "Your password must be at least 5 characters long."
+                            },
+                            confirmPassword: {
+                                required: "Please reenter your password.",
+                                minlength: "Your password must be at least 5 characters long.",
+                                equalTo: "Please enter the same password as above."
+                            },
+                            agree: "You must agree to the terms and conditions.",
+                        },
+                        errorPlacement: function (error, element) {
+                            error.addClass("invalid-feedback");
 
-                    // Loop over them and prevent submission
-                    Array.prototype.slice.call(forms)
-                        .forEach(function (form) {
-                            form.addEventListener('submit', function (event) {
-                                if (!form.checkValidity()) {
-                                    event.preventDefault()
-                                    event.stopPropagation()
-                                }
-
-                                form.classList.add('was-validated')
-                            }, false)
-                        })
-                })();
+                            if (element.prop("type") === "checkbox") {
+                                error.insertAfter(element.parent("label"));
+                            } else {
+                                error.insertAfter(element);
+                            }
+                        },
+                        highlight: function (element, errorClass, validClass) {
+                            $(element).addClass("is-invalid").removeClass("is-valid");
+                        },
+                        unhighlight: function (element, errorClass, validClass) {
+                            $(element).addClass("is-valid").removeClass("is-invalid");
+                        }
+                    });
+                });
             </script>
         </body>
     </html>
