@@ -682,6 +682,66 @@ if (!empty($PostBody)) {
                         document.getElementById("terms-registration").classList.add("col-6");
                     }
                 }
+                jQuery(document).ready(function($) {
+                    $("#registration").validate({
+                        rules: {
+                            firstName: "required",
+                            lastName: "required",
+                            email: {
+                                required: true,
+                                email: true
+                            },
+                            username: {
+                                required: true,
+                                minlength: 2
+                            },
+                            password: {
+                                required: true,
+                                minlength: 5
+                            },
+                            confirmPassword: {
+                                required: true,
+                                minlength: 5,
+                                equalTo: "#password"
+                            },
+                            agree: "required"
+                        },
+                        messages: {
+                            firstName: "Please provide your first name.",
+                            lastName: "Please provide your last name.",
+                            email: "Please provide a valid email.",
+                            username: {
+                                required: "Please provide your username.",
+                                minlength: "Your username must consist of at least 4 characters."
+                            },
+                            password: {
+                                required: "Please provide a password.",
+                                minlength: "Your password must be at least 5 characters long."
+                            },
+                            confirmPassword: {
+                                required: "Please reenter your password.",
+                                minlength: "Your password must be at least 5 characters long.",
+                                equalTo: "Please enter the same password as above."
+                            },
+                            agree: "You must agree to the terms and conditions.",
+                        },
+                        errorPlacement: function (error, element) {
+                            error.addClass("invalid-feedback");
+
+                            if (element.prop("type") === "checkbox") {
+                                error.insertAfter(element.parent("label"));
+                            } else {
+                                error.insertAfter(element);
+                            }
+                        },
+                        highlight: function (element, errorClass, validClass) {
+                            $(element).addClass("is-invalid").removeClass("is-valid");
+                        },
+                        unhighlight: function (element, errorClass, validClass) {
+                            $(element).addClass("is-valid").removeClass("is-invalid");
+                        }
+                    });
+                });
             </script>
         </head>
         <body class="yui-skin-sam">
@@ -2254,71 +2314,7 @@ if (!empty($PostBody)) {
                 </div>
             </div>
             <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-            <script src="assets/jquery/jquery-3.6.0.min.js"></script>
             <script src="assets/jquery-validation/jquery.validate.min.js"></script>
-            <script>
-                $.noConflict();
-                jQuery(document).ready(function($) {
-                    $("#registration").validate({
-                        rules: {
-                            firstName: "required",
-                            lastName: "required",
-                            email: {
-                                required: true,
-                                email: true
-                            },
-                            username: {
-                                required: true,
-                                minlength: 2
-                            },
-                            password: {
-                                required: true,
-                                minlength: 5
-                            },
-                            confirmPassword: {
-                                required: true,
-                                minlength: 5,
-                                equalTo: "#password"
-                            },
-                            agree: "required"
-                        },
-                        messages: {
-                            firstName: "Please provide your first name.",
-                            lastName: "Please provide your last name.",
-                            email: "Please provide a valid email.",
-                            username: {
-                                required: "Please provide your username.",
-                                minlength: "Your username must consist of at least 4 characters."
-                            },
-                            password: {
-                                required: "Please provide a password.",
-                                minlength: "Your password must be at least 5 characters long."
-                            },
-                            confirmPassword: {
-                                required: "Please reenter your password.",
-                                minlength: "Your password must be at least 5 characters long.",
-                                equalTo: "Please enter the same password as above."
-                            },
-                            agree: "You must agree to the terms and conditions.",
-                        },
-                        errorPlacement: function (error, element) {
-                            error.addClass("invalid-feedback");
-
-                            if (element.prop("type") === "checkbox") {
-                                error.insertAfter(element.parent("label"));
-                            } else {
-                                error.insertAfter(element);
-                            }
-                        },
-                        highlight: function (element, errorClass, validClass) {
-                            $(element).addClass("is-invalid").removeClass("is-valid");
-                        },
-                        unhighlight: function (element, errorClass, validClass) {
-                            $(element).addClass("is-valid").removeClass("is-invalid");
-                        }
-                    });
-                });
-            </script>
         </body>
     </html>
     <?php
