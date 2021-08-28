@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * index.php
+ * 
+ * Processing user registration for local, LDAP, NTLM, and OKTA accounts.
+ * 
+ * @author Kevin V. Bui
+ */
 session_start();
 
 require_once('../i2b2.php');
@@ -75,17 +82,19 @@ if (!empty($postData) && isValid()) {
     if ($user_exists) {
         $_SESSION['error_msg'] = "You have already registered.";
     } else {
-        $result_status_error = hasErrorStatus(setUser($username, $full_name, $email, 'A', $password));
+        $authMethod = strtoupper(trim(getAuthenticationMethod($hostname)));
+
+        // generate secure, random default password of lenght 256*2=512 for NTLM,LDAP,OKTA accounts
+        if (!empty($authMethod)) {
+            $password = bin2hex(openssl_random_pseudo_bytes(256));
+        }
+
+        $result_status_error = hasErrorStatus(setUser($full_name, $email, $username, $password));
         if ($result_status_error) {
             $_SESSION['error_msg'] = "Sorry.  We are unable to sign you up at this time.  Please contact the admin.";
         } else {
-            $param_value = strtoupper(trim(getAuthenticationMethod($hostname)));
-            if (!empty($param_value)) {
-                $param_type = 'T';
-                $param_status = 'A';
-                $param_name = 'authentication_method';
-
-                setUserParam($username, $param_type, $param_status, $param_name, $param_value);
+            if (!empty($authMethod)) {
+                addLoginAuthenticationMethod($username, $authMethod);
             }
 
             $_SESSION['success_msg'] = "Thank you for signing up!  We will contact you after your registration has been reviewed.";

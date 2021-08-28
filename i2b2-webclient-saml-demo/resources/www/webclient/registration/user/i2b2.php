@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * i2b2.php
+ * 
+ * A utility for creating request templates and making requests to PM Cell.
+ * 
+ * @author Kevin V. Bui
+ */
 require_once('config.php');
 
 $i2b2_config_data = json_decode(file_get_contents("../../../i2b2_config_data.json"), true);
@@ -103,7 +110,7 @@ function getRequestXML($request_body) {
     return $xml;
 }
 
-function setUser($username, $full_name, $email, $status = 'A', $password = 'demouser') {
+function setUser($full_name, $email, $username, $password, $status = 'A') {
     global $config_pm_uri;
 
     $request_body = <<<XML
@@ -182,11 +189,11 @@ function getUser($username) {
     return $data;
 }
 
-function setUserAuthenticationToSAML($username) {
+function addLoginAuthenticationMethod($username, $authMethod) {
     $param_type = 'T';
     $param_status = 'A';
     $param_name = 'authentication_method';
-    $param_value = 'SAML';
+    $param_value = $authMethod;
 
     return setUserParam($username, $param_type, $param_status, $param_name, $param_value);
 }

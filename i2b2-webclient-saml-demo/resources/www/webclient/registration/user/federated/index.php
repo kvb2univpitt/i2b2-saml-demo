@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * index.php
+ * 
+ * Processing user registration for SAML accounts.
+ * 
+ * @author Kevin V. Bui
+ */
 session_start();
 
 require_once('../i2b2.php');
@@ -25,11 +32,14 @@ if ($username) {
     if ($user_exists) {
         $_SESSION['error_msg'] = "You have already registered.";
     } else {
-        $result_status_error = hasErrorStatus(setUser($username, $full_name, $email));
+        // generate secured, random password of lenght 256*2=512
+        $password = bin2hex(openssl_random_pseudo_bytes(256));
+
+        $result_status_error = hasErrorStatus(setUser($full_name, $email, $username, $password));
         if ($result_status_error) {
             $_SESSION['error_msg'] = "Sorry.  We are unable to sign you up at this time.  Please contact the admin.";
         } else {
-            setUserAuthenticationToSAML($username);
+            addLoginAuthenticationMethod($username, 'SAML');
 
             $_SESSION['success_msg'] = "Thank you for signing up!  We will contact you after your registration has been reviewed.";
         }
