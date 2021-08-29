@@ -333,6 +333,15 @@ if (!empty($PostBody)) {
                     box-sizing: border-box;
                 }
 
+                textarea#terms {
+                    width:100%!important;
+                    border: 1px solid #000;
+                    background: #f2f2f2;
+                    font: normal arial;
+                    color: #333;
+                    resize: none;
+                }
+
                 .btn-local {
                     color: #fff;
                     background-color: #6887aa;
@@ -680,6 +689,21 @@ if (!empty($PostBody)) {
 
                         document.getElementById("terms-registration").classList.remove("col-12");
                         document.getElementById("terms-registration").classList.add("col-6");
+                    }
+
+                    // hide password field for LDAP, NTLM, OKTA
+                    if (authMethod) {
+                        document.getElementById("password").value = 'demouser';
+                        document.getElementById("confirmPassword").value = 'demouser';
+                        document.getElementById("terms").rows = isSamlSignUp ? "16" : "8";
+
+                        [].forEach.call(document.getElementsByClassName('password_field'), e => e.style.display = 'none');
+                    } else {
+                        document.getElementById("password").value = '';
+                        document.getElementById("confirmPassword").value = '';
+                        document.getElementById("terms").rows = "16";
+
+                        [].forEach.call(document.getElementsByClassName('password_field'), e => e.style.display = 'block');
                     }
                 }
                 jQuery(document).ready(function($) {
@@ -2255,7 +2279,7 @@ if (!empty($PostBody)) {
                                     <form id="registration" action="registration/user/local/" method="post">
                                         <div class="row">
                                             <div class="col-6 local_signup">
-                                                <div class="card bg-light">
+                                                <div class="card bg-light h-100">
                                                     <div class="card-body">
                                                         <input type="hidden" id="hostName" name="hostName" value="" />
                                                         <div class="row g-2">
@@ -2275,11 +2299,11 @@ if (!empty($PostBody)) {
                                                                 <label for="username" class="form-label">Username:</label>
                                                                 <input type="text" class="form-control form-control-sm" id="username" name="username" value="" required="required" />
                                                             </div>
-                                                            <div class="col-12">
+                                                            <div class="col-12 password_field">
                                                                 <label for="password" class="form-label">Password:</label>
                                                                 <input type="password" class="form-control form-control-sm mb-0" id="password" name="password" value="" required="required" />
                                                             </div>
-                                                            <div class="col-12">
+                                                            <div class="col-12 password_field">
                                                                 <label for="confirmPassword" class="form-label">Confirm Password:</label>
                                                                 <input type="password" class="form-control form-control-sm mb-0" id="confirmPassword" name="confirmPassword" value="" required="required" />
                                                             </div>
