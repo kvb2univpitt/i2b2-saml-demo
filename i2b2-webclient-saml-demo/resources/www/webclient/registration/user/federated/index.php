@@ -15,7 +15,6 @@ date_default_timezone_set('America/New_York');
 
 $username = filter_input(INPUT_SERVER, 'AJP_eduPersonPrincipalName', FILTER_SANITIZE_STRING);
 if ($username) {
-    $username = strtolower(trim($username));
     $first_name = filter_input(INPUT_SERVER, 'AJP_givenName', FILTER_SANITIZE_STRING);
     $last_name = filter_input(INPUT_SERVER, 'AJP_sn', FILTER_SANITIZE_STRING);
     $email = filter_input(INPUT_SERVER, 'AJP_mail', FILTER_SANITIZE_STRING);
