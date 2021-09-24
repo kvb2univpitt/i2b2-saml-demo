@@ -663,16 +663,15 @@ if (!empty($PostBody)) {
                     let domain = i2b2.PM.model.Domains[selectOpt.value];
                     let authMethod = domain.authenticationMethod.toLowerCase();
                     let hostName = domain.name;
-                    let loginTypes = domain.loginTypes.map(e => e.toLowerCase());
+                    let loginType = domain.loginType;
                     let showUserReg = domain.showRegistration;
 
-                    let isLocal = loginTypes.includes('local');
-                    let isFederated = loginTypes.includes('federated');
+                    let isLocal = loginType === 'local';
+                    let isFederated = loginType === 'federated';
                     let isSamlSignUp = authMethod === 'saml';
 
                     [].forEach.call(document.getElementsByClassName('local_login'), e => e.style.display = isLocal ? 'block' : 'none');
                     [].forEach.call(document.getElementsByClassName('federated_login'), e => e.style.display = isFederated ? 'block' : 'none');
-                    [].forEach.call(document.getElementsByClassName('federated_local_login'), e => e.style.display = (isLocal && isFederated) ? 'block' : 'none');
                     [].forEach.call(document.getElementsByClassName('local_signup'), e => e.style.display = isSamlSignUp ? 'none' : 'block');
                     [].forEach.call(document.getElementsByClassName('saml_signup'), e => e.style.display = isSamlSignUp ? 'block' : 'none');
                     [].forEach.call(document.getElementsByClassName('user_reg'), e => e.style.display = showUserReg ? 'block' : 'none');

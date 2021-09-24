@@ -154,7 +154,6 @@ i2b2.PM.model.html.loginDialog = `
                                 </button>
                             </div>
                         </div>
-                        <p class="divider-text federated_local_login"><span class="bg-light">OR</span></p>
                         <div class="local_login">
                             <div class="mb-3">
                                 <label for="loginusr" class="form-label fw-bold">${i2b2.UI.cfg.loginUsernameText}</label>
