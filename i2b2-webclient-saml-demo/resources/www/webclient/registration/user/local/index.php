@@ -80,7 +80,7 @@ if (!empty($postData) && isValid()) {
 
     $user_exists = userExists($username, getUser($username));
     if ($user_exists) {
-        $_SESSION['error_msg'] = "You have already registered.";
+        $_SESSION['error_msg'] = "The username has already been taken.  Please try another.";
     } else {
         $authMethod = strtoupper(trim(getAuthenticationMethod($hostname)));
 
