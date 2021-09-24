@@ -36,7 +36,7 @@ public class SecurityAuthenticationSAML implements SecurityAuthentication {
         String eppn = params.containsKey(EPPN_HEADER) ? ((String) params.get(EPPN_HEADER)) : "";
         String sessionId = params.containsKey(SESSION_ID_HEADER) ? ((String) params.get(SESSION_ID_HEADER)) : "";
         if (!(username.equals(eppn) && password.equals(sessionId))) {
-            throw new Exception("SAML Authorization Failed: Invalid SAML session.");
+            throw new Exception("Invalid username and/or password.");
         }
 
         return true;
