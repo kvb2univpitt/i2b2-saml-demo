@@ -254,8 +254,14 @@ if (!empty($PostBody)) {
                 var i2b2build = "1.7.12a   [5/1/20 12:00 PM] ";
 
                 function handleAgreeChbx(chbx) {
-                    //                    document.getElementById("register_btn").disabled = !chbx.checked;
-                    [].forEach.call(document.getElementsByClassName('register_btn'), e => e.disabled = !chbx.checked);
+                    let selectOpt = document.getElementById("logindomain");
+                    let domain = i2b2.PM.model.Domains[selectOpt.value];
+                    let authMethod = domain.authenticationMethod.toLowerCase();
+                    if (authMethod === 'saml') {
+                        [].forEach.call(document.getElementsByClassName('register_btn'), e => e.disabled = false);
+                    } else {
+                        [].forEach.call(document.getElementsByClassName('register_btn'), e => e.disabled = !chbx.checked);
+                    }
                 }
 
                 function showAlert(msg) {
@@ -676,6 +682,8 @@ if (!empty($PostBody)) {
                     [].forEach.call(document.getElementsByClassName('saml_signup'), e => e.style.display = isSamlSignUp ? 'block' : 'none');
                     [].forEach.call(document.getElementsByClassName('user_reg'), e => e.style.display = showUserReg ? 'block' : 'none');
 
+                    document.getElementById("term_conditions").style.display = isSamlSignUp ? 'none' : 'block';
+
                     document.getElementById("hostName").value = hostName;
 
                     if (isSamlSignUp) {
@@ -683,11 +691,16 @@ if (!empty($PostBody)) {
 
                         document.getElementById("terms-registration").classList.remove("col-6");
                         document.getElementById("terms-registration").classList.add("col-12");
+
+                        [].forEach.call(document.getElementsByClassName('register_btn'), e => e.disabled = false);
                     } else {
                         document.getElementById("signup-dialog").classList.add("modal-lg");
 
                         document.getElementById("terms-registration").classList.remove("col-12");
                         document.getElementById("terms-registration").classList.add("col-6");
+
+                        let chbx = document.getElementById("agree-local");
+                        [].forEach.call(document.getElementsByClassName('register_btn'), e => e.disabled = !chbx.checked);
                     }
 
                     // hide password field for LDAP, NTLM, OKTA
@@ -705,7 +718,7 @@ if (!empty($PostBody)) {
                         [].forEach.call(document.getElementsByClassName('password_field'), e => e.style.display = 'block');
                     }
                 }
-                jQuery(document).ready(function($) {
+                jQuery(document).ready(function ($) {
                     $("#registration").validate({
                         rules: {
                             firstName: "required",
@@ -1148,7 +1161,7 @@ if (!empty($PostBody)) {
                             <a href="JavaScript:showXML('WORK','main','Stack');" class="debug"><img src="assets/images/msg_stack.gif" border="0" width="16" height="16"  alt="Show XML Message Stack" title="Show XML Message Stack" /></a> 
                             <a href="JavaScript:i2b2.WORK.view.main.refreshTree();"><div style="display: inline;" id="refWorkQS"><img width="16" id="refreshWorkImg" border="0" height="16" src="assets/images/refreshButton.gif" alt="Refresh Workplace" title="Refresh Workplace"></div><div style="display: none;" id="refWork2QS"><img width="16" border="0" height="16" src="assets/images/loadera16.gif" alt="Refresh Workplace" title="Refresh Workplace"></div></a> 
 
-                                                                                                                                                                                                                                                                                                                                                        <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
+                                                                                                                                                                                                                                                                                                                                                            <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
                             <a href="JavaScript:i2b2.WORK.view.main.ZoomView();"><img id="wrkZoomImg" width="16" height="16" border="0" src="js-i2b2/cells/WORK/assets/zoom_icon.gif" alt="Resize Workspace" title="Resize Workspace" /></a> </div>
                     </div>
                     <div class="bodyBox">
@@ -2311,13 +2324,15 @@ if (!empty($PostBody)) {
                                                 </div>
                                             </div>
                                             <div class="col-6" id="terms-registration">
-                                                <div class="mb-3">
-                                                    <textarea class="w-100" id="terms" rows="16" readonly="readonly" style="resize: none;"></textarea>
-                                                </div>
-                                                <div class="form-check">
-                                                    <label class="form-check-label" for="agree-local">
-                                                        <input class="form-check-input" type="checkbox" id="agree-local" name="agree" onchange="handleAgreeChbx(this);" /> I accept the Terms & Conditions
-                                                    </label>
+                                                <div id="term_conditions">
+                                                    <div class="mb-3">
+                                                        <textarea class="w-100" id="terms" rows="16" readonly="readonly" style="resize: none;"></textarea>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label" for="agree-local">
+                                                            <input class="form-check-input" type="checkbox" id="agree-local" name="agree" onchange="handleAgreeChbx(this);" /> I accept the Terms & Conditions
+                                                        </label>
+                                                    </div>
                                                 </div>
                                                 <div class="col-12 local_signup">
                                                     <button class="w-100 btn btn-sm btn-primary mt-4 register_btn" type="submit" disabled="disabled">Sign Up</button>
