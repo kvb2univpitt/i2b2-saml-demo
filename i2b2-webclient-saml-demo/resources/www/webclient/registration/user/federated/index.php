@@ -113,7 +113,7 @@ if ($username) {
                                         </div>
                                         <div class="col-12">
                                             <div class="mt-3">
-                                                <button class="w-100 btn btn-sm btn-primary register_btn" type="submit">Sign Up</button>
+                                                <button class="w-100 btn btn-sm btn-primary register_btn" type="submit" disabled="disabled">Sign Up</button>
                                             </div>
                                         </div>
                                     </div>
