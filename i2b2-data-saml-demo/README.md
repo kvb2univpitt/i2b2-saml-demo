@@ -43,7 +43,7 @@ docker run -d --name=i2b2-data-saml-demo \
 --network i2b2-saml-demo-net \
 -e POSTGRESQL_ADMIN_PASSWORD=demouser \
 -p 5432:5432 \
-kvb2univpitt/i2b2-data-saml-demo:v1.2021.8
+kvb2univpitt/i2b2-data-saml-demo:v1.2021.10
 ```
 
 Windows:
@@ -53,7 +53,7 @@ docker run -d --name=i2b2-data-saml-demo ^
 --network i2b2-saml-demo-net ^
 -e POSTGRESQL_ADMIN_PASSWORD=demouser ^
 -p 5432:5432 ^
-kvb2univpitt/i2b2-data-saml-demo:v1.2021.8
+kvb2univpitt/i2b2-data-saml-demo:v1.2021.10
 ```
 
 The above command will run PostgreSQL 12 on port 5432 in a Docker container with the following default PostgreSQL admin account:

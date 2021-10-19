@@ -42,7 +42,7 @@ Linux / macOS:
 docker run -d --name=i2b2-webclient-saml-demo \
 --network i2b2-saml-demo-net \
 -p 80:80 -p 443:443 \
-kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.8
+kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.10
 ```
 
 Windows:
@@ -51,7 +51,7 @@ Windows:
 docker run -d --name=i2b2-webclient-saml-demo ^
 --network i2b2-saml-demo-net ^
 -p 80:80 -p 443:443 ^
-kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.8
+kvb2univpitt/i2b2-webclient-saml-demo:v1.2021.10
 ```
 
 ## Build the Image
