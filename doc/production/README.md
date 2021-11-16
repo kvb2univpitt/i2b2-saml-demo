@@ -4,6 +4,8 @@ This documentation provides steps on how to install the SAML version of the i2b2
 
 > Note: Most of the commands below require admin privilege.  You will need root access to execute these commands.
 
+## Table of Contents
+
 1. [Operation System Setup](#operation-system-setup)
     1. [Updating the Operating System](#updating-the-operating-system)
     2. [Installing Extra Packages for Enterprise Linux (EPEL)](#installing-extra-packages-for-enterprise-linux--epel-)
