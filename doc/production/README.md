@@ -1,26 +1,31 @@
-# Installation Guide for i2b2 With Federated Login on Red Hat Enterprise Linux 8 (RHEL 8)
-This documentation provides a guide on how to build, configure, and deploy i2b2 application with federated login.
+# Installation Guide For i2b2 on Red Hat Enterprise Linux 8 (RHEL 8)
 
-### Prerequisite
+This documentation provides steps on how to install the SAML version of the i2b2 software along with its dependencies.
 
-The following applications are required to run the applications:
+> Note: Most of the commands below require admin privilege.  You will need root access to execute these commands.
 
-- Apache HTTP web server 2.4 with SSL
-- PHP 7
-- PostgreSQL 12 or above
-- Wildfly 17.0.1.Final
+1. [Operation System Setup](#operation-system-setup)
+    1. [Updating the Operating System](#updating-the-operating-system)
+    2. [Installing Extra Packages for Enterprise Linux (EPEL)](#installing-extra-packages-for-enterprise-linux--epel-)
+2. [Installing the Web Servers](#installing-the-web-servers)
+    1. [Installing the Apache HTTP Server With SSL v3 and TLS v1.x Support](#installing-the-apache-http-server-with-ssl-v3-and-tls-v1x-support)
+        1. [Installation](#installation)
+        2. [Firewall Configuration](#firewall-configuration)
+        3. [SSL Certificates Installation](#ssl-certificates-installation)
+            1. [Creating a Certificate and a Key self-signed for HTTPS](#creating-a-certificate-and-a-key-self-signed-for-https)
+            2. [Installing a Certificate and a Key self-signed for HTTPS](#installing-a-certificate-and-a-key-self-signed-for-https)
 
-The following tools are required for building the applications:
-- OpenJDK 1.8
-- Apache Ant 1.10
+## Operation System Setup
 
-## Update the Operating System
+### Updating the Operating System
+
+Sometimes it is a good idea to update the operation system with the latest security fixes.  Execute the following command to update the operation system.
 
 ```
-dnf -y -y update
+dnf -y update
 ```
 
-## Install Extra Packages for Enterprise Linux (EPEL)
+### Installing Extra Packages for Enterprise Linux (EPEL)
 
 EPEL provides a set of additional packages for RHEL from the Fedora Project.  For more information, please visit [What's EPEL, and how do I use it?](https://www.redhat.com/en/blog/whats-epel-and-how-do-i-use-it).
 
@@ -28,89 +33,67 @@ Execute the following command to install EPEL and update the operating system:
 
 ```
 dnf -y install epel-release
-dnf -y -y update
 ```
 
-## Install Apache HTTP Server With SSL
+Run the update to download the repository files 
 
-Install the Apache HTTP Server:
+```
+dnf -y update
+```
+
+## Installing the Web Servers
+
+### Installing the Apache HTTP Server With SSL v3 and TLS v1.x Support
+
+#### Installation
+
+Execute the following command to install the Apache HTTP Server and SSL module
 
 ```
 dnf -y install httpd mod_ssl
 ```
 
-Start and enable the Apache HTTP Server:
+Enable the Apache HTTP Server to run on startup:
 
 ```
 systemctl enable httpd
+```
+
+Start the Apache HTTP Server
+```
 systemctl start httpd
 ```
 
-Configure the firewall for allowing https access:
+#### Firewall Configuration
+
+Configure the firewall to allow https access.
+
+Add https to the firewall list permanently:
 
 ```
 firewall-cmd --permanent --add-service=https
+```
+
+Reload the firewall policy:
+
+```
 firewall-cmd --reload
 ```
 
-Configure SELinux to allow the Apache HTTP Server to communicate with database:
+#### SSL Certificates Installation
+
+##### Creating a Certificate and a Key self-signed for HTTPS
+
+You can create your own self-signed certificate and key if you don't have the official ones provided by the Certificate Authority.
+
+Generate your own certificate and key:
 
 ```
-setsebool -P httpd_can_network_connect_db on
+openssl req -x509 -newkey rsa:3072 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 3650
 ```
 
-## Install PHP 7 and dependencies
+##### Installing a Certificate and a Key self-signed for HTTPS
 
-```
-dnf -y install php php-cli php-common php-fpm php-bcmath php-gd \
-php-mbstring php-xml php-xmlrpc php-zip php-pgsql php-curl php-pear php-json
-```
-
-Rest the Apache HTTP Server:
-
-```
-systemctl restart httpd
-```
-
-## Install Development Tools
-
-### Install OpenJDK 8
-
-```
-dnf -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
-```
-
-### Install Apache Ant 1.10.x
-
-Download Apache Ant to a temp folder:
-
-```
-curl -s -L -o /tmp/apache-ant.tar.gz https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.tar.gz
-```
-
-Extract Apache Ant to **/usr/local/** directory:
-
-```
-tar zxf /tmp/apache-ant.tar.gz -C /usr/local/
-```
-
-Delete Apache Ant temp file:
-
-```
-rm -rf /tmp/apache-ant.tar.gz 
-```
-
-Create a symbolic link to the **ant** command:
-
-```
-ln -s /usr/local/apache-ant-1.10.12/bin/ant /usr/bin/
-```
-
-### Set the Environment Variables
-
-Add the following lines in the file **/etc/profile**:
-
-```
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
-export ANT_HOME=/usr/local/apache-ant-1.10.12
-```
+- Place the HTTPS Server Certificate (Public Key) in the folder **/etc/pki/tls/certs**. For an example, /etc/pki/tls/certs/localhost.crt.
+- Place the HTTPS Server Key (Private Key) in the folder **/etc/pki/tls/private**. For an example, /etc/pki/tls/private/localhost.key.
+- Place CA Cert in the directory **/etc/pki/tls/certs**.
