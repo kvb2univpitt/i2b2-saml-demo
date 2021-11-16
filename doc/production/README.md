@@ -23,6 +23,11 @@ This documentation provides steps on how to install the SAML version of the i2b2
             1. [Creating a Certificate and a Key self-signed for HTTPS](#creating-a-certificate-and-a-key-self-signed-for-https)
             2. [Installing a Certificate and a Key self-signed for HTTPS](#installing-a-certificate-and-a-key-self-signed-for-https)
         5. [Installing PHP 7](#installing-php-7)
+    2. [Installing Wildfly 17.0.1](#installing-wildfly-1701)
+        1. [Creating System User and Group](#creating-system-user-and-group)
+        2. [Installing Wildfly](#installing-wildfly)
+        3. [Configuring Wildfly](#configuring-wildfly)
+        4. [Setting Up WildFly Service](#setting-up-wildfly-service)
 
 ## Operating System Setup
 
@@ -184,4 +189,136 @@ Restart the Apache HTTP Server for the PHP module to registered.
 
 ```
 systemctl restart httpd
+```
+
+### Installing Wildfly 17.0.1
+
+#### Creating System User and Group
+
+WildFly should never be run as the root user due to the security risks.  We need to create a new system user and group for Wildfly.
+
+Create user group **wildfly**.
+
+```
+groupadd -r wildfly
+```
+
+Create system user **wildfly** and added it to the group **wildfly**: 
+
+```
+useradd -r -g wildfly -d /opt/wildfly -s /sbin/nologin wildfly
+```
+
+#### Installing Wildfly
+
+Download Wildfly to **tmp** directory:
+
+```
+curl -s -L -o /tmp/wildfly-17.0.1.Final.zip https://download.jboss.org/wildfly/17.0.1.Final/wildfly-17.0.1.Final.zip
+```
+
+Extract Wildfly:
+
+```
+unzip /tmp/wildfly-17.0.1.Final.zip -d /opt/
+```
+
+Clean up Wildfly temp file:
+
+```
+rm -rf /tmp/wildfly-17.0.1.Final.zip
+```
+
+Create a symbolic link to WildFly that will point to the WildFly installation directory
+
+```
+ln -s /opt/wildfly-17.0.1.Final /opt/wildfly
+```
+
+Change the ownership of the installation directory to WildFly user
+
+```
+chown -RH wildfly: /opt/wildfly-17.0.1.Final/
+```
+
+#### Configuring Wildfly
+
+Create the directory for the WildFly configuration file:
+
+```
+mkdir -p /etc/wildfly
+```
+
+Copy the configuration file to new directory:
+
+```
+cp /opt/wildfly-17.0.1.Final/docs/contrib/scripts/systemd/wildfly.conf /etc/wildfly/
+```
+
+We want Wildfly to only bind to host ***127.0.0.1***.  Modify the ***wildfly.conf*** file to the following:
+
+```properties
+# The address to bind to
+WILDFLY_BIND=127.0.0.1
+```
+
+Copy the WildFly launch.sh script to the binary directory:
+
+```
+cp /opt/wildfly-17.0.1.Final/docs/contrib/scripts/systemd/launch.sh /opt/wildfly-17.0.1.Final/bin/
+```
+
+Set the script is inside binary directory to be executable:
+
+```
+sh -c 'chmod +x /opt/wildfly-17.0.1.Final/bin/*.sh'
+```
+
+#### Setting Up WildFly Service
+
+Copy the systemd unit service file now to **/etc/systemd/system/** directory:
+
+```
+cp /opt/wildfly-17.0.1.Final/docs/contrib/scripts/systemd/wildfly.service /etc/systemd/system/
+```
+
+Notify ***systemd*** that a new service unit file is in place:
+
+```
+systemctl daemon-reload
+```
+
+Enable Wildfly to start on system bootup:
+
+```
+systemctl enable wildfly
+```
+
+Start Wildfly:
+
+```
+systemctl start wildfly
+```
+
+Check Wildfly status:
+
+```
+systemctl status wildfly
+```
+
+You should see output like this:
+
+```
+● wildfly.service - The WildFly Application Server
+   Loaded: loaded (/etc/systemd/system/wildfly.service; enabled; vendor preset: disabled)
+   Active: active (running) since Tue 2021-11-16 16:41:38 EST; 1min 50s ago
+ Main PID: 4823 (launch.sh)
+    Tasks: 44 (limit: 24776)
+   Memory: 419.4M
+   CGroup: /system.slice/wildfly.service
+           ├─4823 /bin/bash /opt/wildfly/bin/launch.sh standalone standalone.xml 127.0.0.1
+           ├─4824 /bin/sh /opt/wildfly/bin/standalone.sh -c standalone.xml -b 127.0.0.1
+           └─4881 java -D[Standalone] -server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSi>
+
+Nov 16 16:41:38 localhost.localdomain systemd[1]: Started The WildFly Application Server.
 ```
