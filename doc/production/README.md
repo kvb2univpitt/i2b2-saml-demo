@@ -6,18 +6,25 @@ This documentation provides steps on how to install the SAML version of the i2b2
 
 ## Table of Contents
 
-1. [Operation System Setup](#operation-system-setup)
+1. [Operating System Setup](#operating-system-setup)
     1. [Updating the Operating System](#updating-the-operating-system)
     2. [Installing Extra Packages for Enterprise Linux (EPEL)](#installing-extra-packages-for-enterprise-linux--epel-)
-2. [Installing the Web Servers](#installing-the-web-servers)
-    1. [Installing the Apache HTTP Server With SSL v3 and TLS v1.x Support](#installing-the-apache-http-server-with-ssl-v3-and-tls-v1x-support)
-        1. [Installation](#installation)
-        2. [Firewall Configuration](#firewall-configuration)
-        3. [SSL Certificates Installation](#ssl-certificates-installation)
+2. [Installing Development Tools](#installing-development-tools)
+    1. [Installing OpenJDK 8](#installing-openjdk-8)
+    2. [Installing Apache Ant 1.10.x](#installing-apache-ant-110x)
+    3. [Setting the Environment Variables](#setting-the-environment-variables)
+    4. [Restarting the Server](#restarting-the-server)
+3. [Installing Web Servers](#installing-web-servers)
+    1. [Installing Apache HTTP Server With PHP 7.x and SSL v3 and TLS v1.x Support](#installing-apache-http-server-with-php-7x-and-ssl-v3-and-tls-v1x-support)
+        1. [Installing Apache HTTP Server](#installing-apache-http-server)
+        2. [Configurating Firewall For the Apache HTTP Server](#configurating-firewall-for-the-apache-http-server)
+        3. [Configurating SELinux For the Apache HTTP Server](#configurating-selinux-for-the-apache-http-server)
+        4. [Installing SSL Certificates](#installing-ssl-certificates)
             1. [Creating a Certificate and a Key self-signed for HTTPS](#creating-a-certificate-and-a-key-self-signed-for-https)
             2. [Installing a Certificate and a Key self-signed for HTTPS](#installing-a-certificate-and-a-key-self-signed-for-https)
+        5. [Installing PHP 7](#installing-php-7)
 
-## Operation System Setup
+## Operating System Setup
 
 ### Updating the Operating System
 
@@ -37,19 +44,73 @@ Execute the following command to install EPEL and update the operating system:
 dnf -y install epel-release
 ```
 
-Run the update to download the repository files 
+Run the update to download the repository files epel*.repo to the directory **/etc/yum.repos.d/**.
 
 ```
 dnf -y update
 ```
 
-## Installing the Web Servers
+## Installing Development Tools
 
-### Installing the Apache HTTP Server With SSL v3 and TLS v1.x Support
+### Installing OpenJDK 8
 
-#### Installation
+```
+dnf -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+```
 
-Execute the following command to install the Apache HTTP Server and SSL module
+### Installing Apache Ant 1.10.x
+
+Download Apache Ant to a temp folder:
+
+```
+curl -s -L -o /tmp/apache-ant.tar.gz https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.tar.gz
+```
+
+Extract Apache Ant to **/usr/local/** directory:
+
+```
+tar zxf /tmp/apache-ant.tar.gz -C /usr/local/
+```
+
+Clean up Apache Ant temp file:
+
+```
+rm -rf /tmp/apache-ant.tar.gz 
+```
+
+Create a symbolic link to the **ant** command:
+
+```
+ln -s /usr/local/apache-ant-1.10.12/bin/ant /usr/bin/
+```
+
+### Setting the Environment Variables
+
+Add the following lines in the file **/etc/profile**:
+
+```
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+export ANT_HOME=/usr/local/apache-ant-1.10.12
+```
+
+### Restarting the Server
+
+Execute the following common to reboot the machine:
+
+```
+/sbin/shutdown -r now
+```
+
+> Note:  You will need to log back into the machine as a root user.
+
+
+## Installing Web Servers
+
+### Installing Apache HTTP Server With PHP 7.x and SSL v3 and TLS v1.x Support
+
+#### Installing Apache HTTP Server
+
+Execute the following command to install Apache HTTP Server and SSL module
 
 ```
 dnf -y install httpd mod_ssl
@@ -66,7 +127,7 @@ Start the Apache HTTP Server
 systemctl start httpd
 ```
 
-#### Firewall Configuration
+#### Configurating Firewall For the Apache HTTP Server
 
 Configure the firewall to allow https access.
 
@@ -82,7 +143,17 @@ Reload the firewall policy:
 firewall-cmd --reload
 ```
 
-#### SSL Certificates Installation
+#### Configurating SELinux For the Apache HTTP Server
+
+To allow the Apache HTTP Server to communicate with database, execute the following command:
+
+```
+setsebool -P httpd_can_network_connect_db on
+```
+
+#### Installing SSL Certificates
+
+Default SSL certificates are already created and installed when **mod_ssl** is installed.  The instruction below are for creating and installing your custom SSL certificates or for installing SSL certificates signed by a certificate authority.
 
 ##### Creating a Certificate and a Key self-signed for HTTPS
 
@@ -99,3 +170,18 @@ openssl req -x509 -newkey rsa:3072 -keyout /etc/pki/tls/private/$(hostname -f).k
 - Place the HTTPS Server Certificate (Public Key) in the folder **/etc/pki/tls/certs**. For an example, /etc/pki/tls/certs/localhost.crt.
 - Place the HTTPS Server Key (Private Key) in the folder **/etc/pki/tls/private**. For an example, /etc/pki/tls/private/localhost.key.
 - Place CA Cert in the directory **/etc/pki/tls/certs**.
+
+#### Installing PHP 7
+
+Execute the following command to install PHP 7 for the Apache HTTP Server
+
+```
+dnf -y install php php-cli php-common php-fpm php-bcmath php-gd \
+php-mbstring php-xml php-xmlrpc php-zip php-pgsql php-curl php-pear php-json
+```
+
+Restart the Apache HTTP Server for the PHP module to registered.
+
+```
+systemctl restart httpd
+```
