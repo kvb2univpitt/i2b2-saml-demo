@@ -1,35 +1,47 @@
 # Installation Guide For i2b2 on Red Hat Enterprise Linux 8 (RHEL 8)
 
-This documentation provides steps on how to install the SAML version of the i2b2 software along with its dependencies.
+This documentation provides step-by-step on how to install the following:
+
+- The system software for running i2b2.
+- The development tools for building i2b2.
+- The i2b2 software for federated login.
 
 > Note: Most of the commands below require admin privilege.  You will need root access to execute these commands.
 
 ## Table of Contents
 
-1. [Operating System Setup](#operating-system-setup)
-    1. [Updating the Operating System](#updating-the-operating-system)
-    2. [Installing Extra Packages for Enterprise Linux (EPEL)](#installing-extra-packages-for-enterprise-linux--epel-)
-2. [Installing Development Tools](#installing-development-tools)
-    1. [Installing OpenJDK 8](#installing-openjdk-8)
-    2. [Installing Apache Ant 1.10.x](#installing-apache-ant-110x)
-    3. [Setting the Environment Variables](#setting-the-environment-variables)
-    4. [Restarting the Server](#restarting-the-server)
-3. [Installing Web Servers](#installing-web-servers)
-    1. [Installing Apache HTTP Server With PHP 7.x and SSL v3 and TLS v1.x Support](#installing-apache-http-server-with-php-7x-and-ssl-v3-and-tls-v1x-support)
-        1. [Installing Apache HTTP Server](#installing-apache-http-server)
-        2. [Configurating Firewall For the Apache HTTP Server](#configurating-firewall-for-the-apache-http-server)
-        3. [Configurating SELinux For the Apache HTTP Server](#configurating-selinux-for-the-apache-http-server)
-        4. [Installing SSL Certificates](#installing-ssl-certificates)
-            1. [Creating a Certificate and a Key self-signed for HTTPS](#creating-a-certificate-and-a-key-self-signed-for-https)
-            2. [Installing a Certificate and a Key self-signed for HTTPS](#installing-a-certificate-and-a-key-self-signed-for-https)
-        5. [Installing PHP 7](#installing-php-7)
-    2. [Installing Wildfly 17.0.1](#installing-wildfly-1701)
-        1. [Creating System User and Group](#creating-system-user-and-group)
-        2. [Installing Wildfly](#installing-wildfly)
-        3. [Configuring Wildfly](#configuring-wildfly)
-        4. [Setting Up WildFly Service](#setting-up-wildfly-service)
+- [Setting Up the Operating System](#setting-up-the-operating-system)
+  * [Updating the Operating System](#updating-the-operating-system)
+  * [Installing Extra Packages for Enterprise Linux (EPEL)](#installing-extra-packages-for-enterprise-linux--epel-)
+- [Installing Development Tools](#installing-development-tools)
+  * [Installing OpenJDK 8](#installing-openjdk-8)
+  * [Installing Apache Ant 1.10.x](#installing-apache-ant-110x)
+  * [Setting the Environment Variables](#setting-the-environment-variables)
+  * [Restarting the Server](#restarting-the-server)
+- [Installing Web Servers](#installing-web-servers)
+  * [Installing Apache HTTP Server With PHP 7.x and SSL v3 and TLS v1.x Support](#installing-apache-http-server-with-php-7x-and-ssl-v3-and-tls-v1x-support)
+    + [Installing Apache HTTP Server](#installing-apache-http-server)
+    + [Adding to Systemd Services](#adding-to-systemd-services)
+    + [Configurating Firewall For the Apache HTTP Server](#configurating-firewall-for-the-apache-http-server)
+    + [Configurating SELinux For the Apache HTTP Server](#configurating-selinux-for-the-apache-http-server)
+    + [Installing SSL Certificates](#installing-ssl-certificates)
+      - [Creating a Certificate and a Key self-signed for HTTPS](#creating-a-certificate-and-a-key-self-signed-for-https)
+      - [Installing a Certificate and a Key self-signed for HTTPS](#installing-a-certificate-and-a-key-self-signed-for-https)
+    + [Installing PHP 7](#installing-php-7)
+  * [Installing Wildfly 17.0.1](#installing-wildfly-1701)
+    + [Creating System User and Group](#creating-system-user-and-group)
+    + [Installing Wildfly](#installing-wildfly)
+    + [Configuring Wildfly](#configuring-wildfly)
+    + [Setting Up WildFly Service](#setting-up-wildfly-service)
+- [Installing Database](#installing-database)
+  * [Installing PostgreSQL 10](#installing-postgresql-10)
+    + [Installing PostgreSQL](#installing-postgresql)
+    + [Configuring PostgreSQL](#configuring-postgresql)
+      - [Modifying the File /var/lib/pgsql/data/postgresql.conf](#modifying-the-file--var-lib-pgsql-data-postgresqlconf)
+      - [Modifying the File /var/lib/pgsql/data/pg_hba.conf](#modifying-the-file--var-lib-pgsql-data-pg-hbaconf)
+    + [Adding to Systemd Services](#adding-to-systemd-services-1)
 
-## Operating System Setup
+## Setting Up the Operating System
 
 ### Updating the Operating System
 
@@ -120,6 +132,8 @@ Execute the following command to install Apache HTTP Server and SSL module
 ```
 dnf -y install httpd mod_ssl
 ```
+
+#### Adding to Systemd Services
 
 Enable the Apache HTTP Server to run on startup:
 
@@ -257,7 +271,7 @@ cp /opt/wildfly-17.0.1.Final/docs/contrib/scripts/systemd/wildfly.conf /etc/wild
 
 We want Wildfly to only bind to host ***127.0.0.1***.  Modify the ***wildfly.conf*** file to the following:
 
-```properties
+```text
 # The address to bind to
 WILDFLY_BIND=127.0.0.1
 ```
@@ -321,4 +335,68 @@ You should see output like this:
            └─4881 java -D[Standalone] -server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSi>
 
 Nov 16 16:41:38 localhost.localdomain systemd[1]: Started The WildFly Application Server.
+```
+
+> Note: Normally, we would configure the firewall policy to allow public access to Wildfly.  However, we will be using AJP for communication between Apache HTTP Server and Wildfly.  We will need to keep Wildfly access local.
+
+## Installing Database
+
+### Installing PostgreSQL 10
+
+#### Installing PostgreSQL
+
+Execute the following command to install PostgreSQL:
+
+```
+dnf -y install postgresql postgresql-server postgresql-contrib
+```
+
+Initialize the database:
+
+```
+postgresql-setup --initdb --unit postgresql
+```
+
+#### Configuring PostgreSQL
+
+##### Modifying the File /var/lib/pgsql/data/postgresql.conf
+
+Uncomment line **59** to:
+
+```text
+listen_addresses = 'localhost'		# what IP address(es) to listen on;
+```
+
+Uncomment line **63** to:
+
+```text
+port = 5432				# (change requires restart)
+```
+
+##### Modifying the File /var/lib/pgsql/data/pg_hba.conf
+
+Edit the file as shown below (line 77-84):
+
+```text
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     peer
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+# IPv6 local connections:
+host    all             all             ::1/128                 md5
+```
+
+#### Adding to Systemd Services
+
+Enable PostgreSQL to run on startup:
+
+```
+systemctl enable postgresql
+```
+
+Start PostgreSQL
+```
+systemctl start postgresql
 ```
