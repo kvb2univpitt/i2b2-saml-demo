@@ -400,3 +400,156 @@ Start PostgreSQL
 ```
 systemctl start postgresql
 ```
+
+#### Configurating Firewall For the Apache HTTP Server
+
+Enable public access to PostgreSQL:
+
+```
+firewall-cmd --zone=public --permanent --add-service=postgresql
+```
+
+Reload firewall rules:
+
+```
+firewall-cmd --reload
+```
+
+## Installing the i2b2 Software
+
+### Installing the i2b2-data
+
+#### Downloading the i2b2 Demo Data
+
+Download the i2b2 data to a temp directory:
+
+```
+curl -s -L -o /tmp/v1.7.12a.0001.zip https://github.com/i2b2/i2b2-data/archive/refs/tags/v1.7.12a.0001.zip
+```
+Extract the i2b2 data to **/opt/** directory.
+
+```
+unzip /tmp/v1.7.12a.0001.zip -d /opt/
+```
+
+#### Configuring the db.properties Files
+
+We need to modify the ***db.properties*** files to point to the PostgreSQL database.
+
+> Note:  The instruction below assume your hostname is **localhost**.  If you want to use a different hostname, replace ***localhost*** with your hostname.
+
+Replace all of the content in the file ***/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Crcdata/db.properties*** with the following content:
+
+```properties
+# Database setup parameters for PostgreSQL
+db.type=postgresql
+db.username=i2b2demodata
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+db.project=demo
+```
+
+Replace all of the content in the file ***/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Hivedata/db.properties*** with the following content:
+
+```properties
+# Database setup parameters for PostgreSQL
+db.type=postgresql
+db.username=i2b2hive
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+```
+
+Replace all of the content in the file ***/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Imdata/db.properties*** with the following content:
+
+```properties
+# Database setup parameters for PostgreSQL
+db.type=postgresql
+db.username=i2b2imdata
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+```
+
+Replace all of the content in the file ***/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Metadata/db.properties*** with the following content:
+
+```properties
+# Database setup parameters for PostgreSQL
+db.type=postgresql
+db.username=i2b2metadata
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+db.project=demo
+db.dimension=OBSERVATION_FACT
+db.schemaname=public
+```
+
+Replace all of the content in the file ***/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Pmdata/db.properties*** with the following content:
+
+```properties
+# Database setup parameters for PostgreSQL
+db.type=postgresql
+db.username=i2b2pm
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+db.project=demo
+```
+
+Replace all of the content in the file ***/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Workdata/db.properties*** with the following content:
+
+```properties
+# Database setup parameters for PostgreSQL
+db.type=postgresql
+db.username=i2b2workdata
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+db.project=demo
+```
+
+#### Creating i2b2 Database
+
+##### Download the SQL Script
+
+Download the SQL script to create i2b2 database and i2b2 database users in the directory **/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall**:
+
+```
+curl -s -L -o /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/create_database.sql \
+https://raw.githubusercontent.com/kvb2univpitt/i2b2-saml-demo/main/i2b2-data-saml-demo/resources/create_database.sql
+```
+
+##### Run the SQL Script
+
+Switch to PostgreSQL root user ***postgres***:
+
+```
+su - postgres
+```
+
+Run the ***create_database.sql*** script:
+
+```
+psql -f /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/create_database.sql
+```
+
+You should see the following output:
+
+```
+CREATE DATABASE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+```
