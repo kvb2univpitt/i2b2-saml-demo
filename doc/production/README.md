@@ -32,6 +32,7 @@ This documentation provides step-by-step on how to install the following:
     + [Creating System User and Group](#creating-system-user-and-group)
     + [Installing Wildfly](#installing-wildfly)
     + [Configuring Wildfly](#configuring-wildfly)
+    + [Configuring Wildfly to Listen on Port 9090 and 9443](#configuring-wildfly-to-listen-on-port-9090-and-9443)
     + [Setting Up WildFly Service](#setting-up-wildfly-service)
 - [Installing Database](#installing-database)
   * [Installing PostgreSQL 10](#installing-postgresql-10)
@@ -40,6 +41,13 @@ This documentation provides step-by-step on how to install the following:
       - [Modifying the File /var/lib/pgsql/data/postgresql.conf](#modifying-the-file--var-lib-pgsql-data-postgresqlconf)
       - [Modifying the File /var/lib/pgsql/data/pg_hba.conf](#modifying-the-file--var-lib-pgsql-data-pg-hbaconf)
     + [Adding to Systemd Services](#adding-to-systemd-services-1)
+    + [Configurating Firewall For the Apache HTTP Server](#configurating-firewall-for-the-apache-http-server-1)
+- [Installing the i2b2 Software](#installing-the-i2b2-software)
+  * [Installing the i2b2-data](#installing-the-i2b2-data)
+    + [Downloading the i2b2 Demo Data](#downloading-the-i2b2-demo-data)
+    + [Configuring the db.properties Files](#configuring-the-dbproperties-files)
+    + [Creating i2b2 Database](#creating-i2b2-database)
+    + [Loading the i2b2 Demo Data](#loading-the-i2b2-demo-data)
 
 ## Setting Up the Operating System
 
@@ -288,6 +296,17 @@ Set the script is inside binary directory to be executable:
 sh -c 'chmod +x /opt/wildfly-17.0.1.Final/bin/*.sh'
 ```
 
+#### Configuring Wildfly to Listen on Port 9090 and 9443
+
+The i2b2 core servers runs http on port 9090 and https on port 9443.
+
+Modify line ***522-523*** of the file ***/opt/wildfly-17.0.1.Final/standalone/configuration/standalone.xml*** to the following:
+
+```xml
+<socket-binding name="http" port="${jboss.http.port:9090}" />
+<socket-binding name="https" port="${jboss.https.port:9443}" />
+```
+
 #### Setting Up WildFly Service
 
 Copy the systemd unit service file now to **/etc/systemd/system/** directory:
@@ -512,44 +531,68 @@ db.project=demo
 
 #### Creating i2b2 Database
 
-##### Download the SQL Script
-
-Download the SQL script to create i2b2 database and i2b2 database users in the directory **/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall**:
-
-```
-curl -s -L -o /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/create_database.sql \
-https://raw.githubusercontent.com/kvb2univpitt/i2b2-saml-demo/main/i2b2-data-saml-demo/resources/create_database.sql
-```
-
-##### Run the SQL Script
-
 Switch to PostgreSQL root user ***postgres***:
 
 ```
 su - postgres
 ```
 
-Run the ***create_database.sql*** script:
+Connect to PostgreSQL database:
 
 ```
-psql -f /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/create_database.sql
+psql
 ```
 
-You should see the following output:
+Execute the following command to create database:
+
+```sql
+CREATE DATABASE i2b2;
+```
+
+Execute the following command ***one-by-one*** to create i2b2 users with password:
+
+```sql
+CREATE USER i2b2demodata WITH PASSWORD 'demouser';
+CREATE USER i2b2hive WITH PASSWORD 'demouser';
+CREATE USER i2b2imdata WITH PASSWORD 'demouser';
+CREATE USER i2b2metadata WITH PASSWORD 'demouser';
+CREATE USER i2b2pm WITH PASSWORD 'demouser';
+CREATE USER i2b2workdata WITH PASSWORD 'demouser';
+```
+
+Execute the following command ***one-by-one*** to assign privilages to users for accessing i2b2 database:
+
+```sql
+GRANT ALL PRIVILEGES ON DATABASE i2b2 TO i2b2demodata;
+GRANT ALL PRIVILEGES ON DATABASE i2b2 TO i2b2hive;
+GRANT ALL PRIVILEGES ON DATABASE i2b2 TO i2b2imdata;
+GRANT ALL PRIVILEGES ON DATABASE i2b2 TO i2b2metadata;
+GRANT ALL PRIVILEGES ON DATABASE i2b2 TO i2b2pm;
+GRANT ALL PRIVILEGES ON DATABASE i2b2 TO i2b2workdata;
+GRANT ALL PRIVILEGES ON DATABASE i2b2 TO i2b2demodata;
+```
+
+Log out of the database:
 
 ```
-CREATE DATABASE
-CREATE ROLE
-CREATE ROLE
-CREATE ROLE
-CREATE ROLE
-CREATE ROLE
-CREATE ROLE
-GRANT
-GRANT
-GRANT
-GRANT
-GRANT
-GRANT
-GRANT
+\q
 ```
+
+Switch back to the root user:
+
+```
+exit
+```
+
+#### Loading the i2b2 Demo Data
+
+Execute the following command to load the demo data:
+
+```
+/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/apache-ant/bin/ant \
+-f /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/build.xml \
+create_database load_demodata
+
+```
+
+> Note: loading the data may take a while.  Usually, it's over 10 minutes.
