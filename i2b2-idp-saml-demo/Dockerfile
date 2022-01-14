@@ -1,4 +1,4 @@
-FROM php:7.4.9-apache
+FROM php:7.4.27-apache
 
 LABEL maintainer="Kevin Bui"
 
