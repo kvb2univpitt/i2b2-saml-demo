@@ -1,3 +1,4 @@
+-- POSTGRESQL
 CREATE DATABASE i2b2;
 
 CREATE USER i2b2demodata WITH PASSWORD 'demouser';
