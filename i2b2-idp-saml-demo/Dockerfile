@@ -1,4 +1,4 @@
-FROM php:7.4.22-apache
+FROM php:7.4.9-apache
 
 LABEL maintainer="Kevin Bui"
 
@@ -8,7 +8,8 @@ RUN apt-get update && \
     rm -r /var/lib/apt/lists/*
 
 # SimpleSAMLphp
-ARG SIMPLESAMLPHP_VERSION=1.19.1
+ARG SIMPLESAMLPHP_VERSION=1.19.4
+
 RUN curl -s -L -o /tmp/simplesamlphp.tar.gz https://github.com/simplesamlphp/simplesamlphp/releases/download/v$SIMPLESAMLPHP_VERSION/simplesamlphp-$SIMPLESAMLPHP_VERSION.tar.gz
 RUN tar xzf /tmp/simplesamlphp.tar.gz -C /tmp && \
     rm -f /tmp/simplesamlphp.tar.gz  && \
