@@ -1,4 +1,4 @@
-# i2b2-data-saml-demo
+# i2b2-data-saml-demo (PostgreSQL)
 
 A Docker image of PostgreSQL database containing i2b2 demo data ([Release 1.7.12a](https://github.com/i2b2/i2b2-data/releases/tag/v1.7.12a.0001)) for SAML demostration purposes.
 
@@ -71,7 +71,7 @@ Below is a list of user accounts for logging into the i2b2 web client:
 
 The **local** account means using ***username*** and ***password*** for authentication.  The **SAML** account means using a third-party ***identity provider (IdP)*** for authentication.
 
-> Note that the user accounts above is not the database admin account.  
+> Note that the user accounts above is not the database admin account.
 
 ### Access the Database
 
@@ -322,5 +322,5 @@ docker rm i2b2-data-saml-demo
 Execute the following to delete the Docker image:
 
 ```
-docker rmi local/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
+docker rmi local/i2b2-data-saml-demo-postgresql
 ```

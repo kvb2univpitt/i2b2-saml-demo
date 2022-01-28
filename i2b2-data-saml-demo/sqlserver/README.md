@@ -1,31 +1,153 @@
-# i2b2-data-saml-demo: SQL Server 2017
+# i2b2-data-saml-demo (SQL Server)
 
-A SQL Server Docker image containing i2b2 demo data (version 1.7.12a).
+A Docker image of SQL Server database containing i2b2 demo data ([Release 1.7.12a](https://github.com/i2b2/i2b2-data/releases/tag/v1.7.12a.0001)) for SAML demostration purposes.
 
-## Build the i2b2-data-saml-demo Docker Image
+## Docker User-defined Bridge Network
+
+The container runs on a user-defined bridge network ***i2b2-saml-demo-net***.  The user-defined bridge network provides better isolation and allows containers on the same network to communicate with each other using their container names instead of their IP addresses.
+
+### Ensure User-defined Bridge Network Exists
+
+To verify that the network ***i2b2-saml-demo-net*** exists, execute the following command to list all of the Docker's networks:
+
+```
+docker network ls
+```
+
+The output should be similar to this:
+
+```
+NETWORK ID     NAME                 DRIVER    SCOPE
+9ea1de540506   bridge               bridge    local
+bf7e75025889   host                 host      local
+88a9b525113e   i2b2-saml-demo-net   bridge    local
+```
+
+If ***i2b2-saml-demo-net*** network is **not** listed, execute the following command to create it:
+
+```
+docker network create i2b2-saml-demo-net
+```
+
+## Run the Prebuilt Image
+
+A prebuilt Docker image is provided on [Docker Hub](https://hub.docker.com/r/kvb2univpitt/i2b2-data-saml-demo-sqlserver).
 
 ### Prerequisites
 
-- [Docker 19.x](https://docs.docker.com/get-docker/)
--  Java SDK 8 ([Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) or [OpenJDK](https://adoptopenjdk.net/))
-- [SQL Server command-line tools](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-ver15)
+- [Docker 19 or above](https://docs.docker.com/get-docker/)
 
-### Build the Docker Image:
-
-Open up a terminal in the directory ***i2b2-data-saml-demo/sqlserver*** where the file ***Dockerfile*** is and execute the following command:
-
-```
-docker build -t local/i2b2-data-saml-demo-sqlserver .
-```
-
-### Run the Image In a Container
-
-Execute the following command:
+Open up a terminal and execute the following command to download and run the prebuilt image in a container named ***i2b2-data-saml-demo***.
 
 ###### Linux / macOS:
 
 ```
 docker run -d --name=i2b2-data-saml-demo \
+--network i2b2-saml-demo-net \
+-e MSSQL_AGENT_ENABLED=true \
+-e ACCEPT_EULA=Y \
+-e SA_PASSWORD=Demouser123! \
+-p 1433:1433 \
+kvb2univpitt/i2b2-data-saml-demo-sqlserver:v1.7.12a.2022.01
+```
+
+###### Windows:
+
+```
+docker run -d --name=i2b2-data-saml-demo ^
+--network i2b2-saml-demo-net ^
+-e MSSQL_AGENT_ENABLED=true ^
+-e ACCEPT_EULA=Y ^
+-e SA_PASSWORD=Demouser123! ^
+-p 1433:1433 ^
+kvb2univpitt/i2b2-data-saml-demo-sqlserver:v1.7.12a.2022.01
+```
+
+### Application Users
+
+Below is a list of user accounts for logging into the i2b2 web client:
+
+| Username              | Password | Type  |
+|-----------------------|----------|-------|
+| demo                  | demouser | local |
+| ckent                 | demouser | local |
+| ckent@dailyplanet.com |          | SAML  |
+
+The **local** account means using ***username*** and ***password*** for authentication.  The **SAML** account means using a third-party ***identity provider (IdP)*** for authentication.
+
+> Note that the user accounts above is not the database admin account.  
+
+### Access the Database
+
+The database can be accessed with any database tool by using the following configurations:
+
+| Attribute | Value        |
+|-----------|--------------|
+| Host      | localhost    |
+| Port      | 1433         |
+| Database  | master       |
+| Username  | sa           |
+| Password  | Demouser123! |
+
+### Docker Container and Image Management
+
+Execute the following to stop the running Docker container:
+
+```
+docker stop i2b2-data-saml-demo
+```
+
+Execute the following to delete the Docker container:
+
+```
+docker rm i2b2-data-saml-demo
+```
+
+Execute the following to delete the Docker image:
+
+```
+docker rmi kvb2univpitt/i2b2-data-saml-demo-sqlserver:v1.7.12a.2022.01
+```
+
+## Build the Image
+
+### Prerequisites
+
+- [Docker or above](https://docs.docker.com/get-docker/)
+-  Java SDK 8 ([Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) or [OpenJDK](https://adoptopenjdk.net/))
+- [sqlserver](https://www.sqlserver.org/download/)
+
+### Build the Docker Image:
+
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/sqlserver**, where the ***Dockerfile*** file is, and execute the following command to build the image:
+
+```
+docker build -t local/i2b2-data-saml-demo-sqlserver .
+```
+
+To verify that the image has been built, execute the following command to list the Docker images:
+
+```
+docker images
+```
+
+The output should be similar to the following:
+
+```
+REPOSITORY                            TAG       IMAGE ID       CREATED          SIZE
+local/i2b2-data-saml-demo-sqlserver   latest    9f41f8964dcb   38 seconds ago   2.03GB
+ubuntu                                18.04     886eca19e611   3 weeks ago      63.1MB
+```
+
+### Run the Image In a Container
+
+Execute the following command the run the image in a Docker container name ***i2b2-data-saml-demo*** on the user-defined bridge network ***i2b2-saml-demo-net***:
+
+###### Linux / macOS:
+
+```
+docker run -d --name=i2b2-data-saml-demo \
+--network i2b2-saml-demo-net \
 -e MSSQL_AGENT_ENABLED=true \
 -e ACCEPT_EULA=Y \
 -e SA_PASSWORD=Demouser123! \
@@ -37,53 +159,36 @@ local/i2b2-data-saml-demo-sqlserver
 
 ```
 docker run -d --name=i2b2-data-saml-demo ^
+--network i2b2-saml-demo-net ^
 -e MSSQL_AGENT_ENABLED=true ^
--e ACCEPT_EULA=Y \
+-e ACCEPT_EULA=Y ^
 -e SA_PASSWORD=Demouser123! ^
 -p 1433:1433 ^
 local/i2b2-data-saml-demo-sqlserver
 ```
 
-The above command will run SQL Server 2017 on port 1433 in a Docker container.
-
-To verify that database is running in a container, execute the following command:
+To verify that the container is running, execute the following command to list the Docker containers:
 
 ```
 docker ps
 ```
 
-You should see the output similar to this:
+The output should be similar to the following:
 
 ```
-CONTAINER ID   IMAGE                            COMMAND                  CREATED         STATUS         PORTS                                       NAMES
-c8f5d7d22e32   local/i2b2-data-saml-demo-sqlserver   "/bin/sh -c /opt/mss…"   6 minutes ago   Up 6 minutes   0.0.0.0:1433->1433/tcp, :::1433->1433/tcp   i2b2-data-saml-demo
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS        PORTS                                       NAMES
+fa2fe1240e1d   local/i2b2-data-saml-demo-sqlserver   "/bin/sh -c /opt/mss…"   2 seconds ago   Up 1 second   0.0.0.0:1433->1433/tcp, :::1433->1433/tcp   i2b2-data-saml-demo
 ```
 
-To stop the container, execute the following:
+### Create i2b2 Database and Users
 
-```
-docker stop i2b2-data-saml-demo
-```
-
-To delete the container, execute the following:
-
-```
-docker rm i2b2-data-saml-demo
-```
-
-### Run SQL Scripts to Setup Database
-
-Open up a terminal in the directory ***i2b2-data-saml-demo/sqlserver***.
-
-#### Create Database i2b2
-
-execute the following command the run the SQL script to create a database called **i2b2**:
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/sqlserver**.  Execute the following command to run sqlserver to execute the SQL script that creates i2b2 database and i2b2 database users:
 
 ```
 sqlcmd -S localhost -U sa -P Demouser123! -i ./resources/create_database.sql -e
 ```
 
-You should see the following output:
+The output should be similar to the following:
 
 ```
 -- SQL Server
@@ -142,15 +247,13 @@ Changed database context to 'i2b2pm'.
 Changed database context to 'i2b2workdata'.
 ```
 
-### Insert i2b2 Demo Data into the Database
+### Import the i2b2 Demo Data into the Database
 
-#### Download the i2b2 Software
-
-Download the [i2b2-data-1.7.12a.0001.zip](https://github.com/i2b2/i2b2-data/archive/refs/tags/v1.7.12a.0001.zip) and unzip the file to the directory ***i2b2-data-saml-demo***.
+Download the zip file [i2b2-data-1.7.12a.0001.zip](https://github.com/i2b2/i2b2-data/archive/refs/tags/v1.7.12a.0001.zip) and extract it to the directory **i2b2-demo/i2b2-data-demo/sqlserver**.
 
 #### Copy the Database Property Files to the i2b2-data Software
 
-Open up a terminal in the directory ***i2b2-data-saml-demo***, where the **i2b2-data-1.7.12a.0001.zip** was extracted.  Execute the following command to copy the database property files over:
+Open up a terminal in the directory **i2b2-demo/i2b2-data-demo/sqlserver**, where the ***i2b2-data-1.7.12a.0001.zip*** was extracted, and execute the following command to copy the database property files over:
 
 ###### Linux / macOS:
 
@@ -174,9 +277,9 @@ copy ./resources/db_configs/Pmdata/db.properties ./i2b2-data-1.7.12a.0001/edu.ha
 copy ./resources/db_configs/Workdata/db.properties ./i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Workdata/
 ```
 
-#### Run the Ant Script
+#### Run the Ant Script to Import the i2b2 Demo Data
 
-Execute the following command to run the ant script to insert the i2b2 demo data into the database:
+Execute the following command to run the ant script to import the i2b2 demo data into the database:
 
 ###### Linux / macOS:
 
@@ -194,61 +297,78 @@ create_database load_demodata
 create_database load_demodata
 ```
 
-> The process should take about 15-20 minutes, depending on how fast your computer is.
+The process should take about 15-20 minutes, depending on how fast your computer is.
+
+### Add Additional Web Client User Accounts
+
+The databause currently has the following user account for logging into the web client:
+
+| Username              | Password | Type  |
+|-----------------------|----------|-------|
+| demo                  | demouser | local |
+
+The following additional user accounts will be added to the database for logging into the web client:
+
+| Username              | Password | Type  |
+|-----------------------|----------|-------|
+| ckent                 | demouser | local |
+| ckent@dailyplanet.com |          | SAML  |
+
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/sqlserver** and execute the following command to run sqlserver to execute the SQL script that adds additional user accounts:
+
+```
+sqlcmd -S localhost -U sa -P Demouser123! -i ./resources/users.sql -e
+```
 
 ### Update the pm_cell_data Table
 
-The i2b2 webclient requests will no longer be made directly to the i2b2 hives (Wildfly server).  All of the requests will be proxy over to the Wildfly server from the Apache server that is hosting the i2b2 webclient. The urls in the **pm_cell_data** table must be updated.
+The **pm_cell_data** table contains URLs used by the i2b2 web client to communicate with the i2b2 core server. In this setup, the Apache JServ Protocol (AJP) is used for communication between Wildfly and the Apache web server.  In other words, the i2b2 web client ***does not*** communicate directly to the i2b2 core server.  Instead, the web client sends the request to itself on a designated path that gets proxy over to the i2b2 core server.
 
-Open up a terminal in the directory ***i2b2-data-saml-demo*** and execute the following command to run the SQL script to update the **pm_cell_data** table:
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/sqlserver** and execute the following command to run sqlserver to execute the SQL script that updates the URLs in the **pm_cell_data** table:
 
 ```
 sqlcmd -S localhost -U sa -P Demouser123! -i ./resources/update_tables.sql -e
 ```
 
-You should see the following output:
-
-```
--- any request using these URLs will be proxy over to the i2b2 hives via AJP
-UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://i2b2-core-server-demo:9090/i2b2/services/QueryToolService/' WHERE cell_id  = 'CRC';
-UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://i2b2-core-server-demo:9090/i2b2/services/FRService/' WHERE cell_id  = 'FRC';
-UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://i2b2-core-server-demo:9090/i2b2/services/OntologyService/' WHERE cell_id  = 'ONT';
-UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://i2b2-core-server-demo:9090/i2b2/services/WorkplaceService/' WHERE cell_id  = 'WORK';
-UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://i2b2-core-server-demo:9090/i2b2/services/IMService/' WHERE cell_id  = 'IM';
-
-
-(1 rows affected)
-
-(1 rows affected)
-
-(1 rows affected)
-
-(1 rows affected)
-
-(1 rows affected)
-```
-
 ### Save the Docker Container State to the Docker Image
 
-After the i2b2 demo data has been inserted into the database, we need to persist the changes to the Docker image so that the demo data is still there when we rerun the imagine in a container.
+The changes made to the Docker container need to be saved to the Docker image so that the data is still there when the image is launched into a new container.
 
-To save the Docker container state to the Docker image, we first need the **container ID**.  Execute the following command to get the container ID:
+The container ID is required to commit the changes to the image.  Execute the following to get the container ID:
 
 ```
 docker ps
 ```
 
-The output similar to this:
+The output should be similar to the following:
 
 ```
-CONTAINER ID   IMAGE                            COMMAND                  CREATED         STATUS         PORTS                                       NAMES
-c8f5d7d22e32   local/i2b2-data-saml-demo-sqlserver   "/bin/sh -c /opt/mss…"   6 minutes ago   Up 6 minutes   0.0.0.0:1433->1433/tcp, :::1433->1433/tcp   i2b2-data-saml-demo
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS        PORTS                                       NAMES
+fa2fe1240e1d   local/i2b2-data-saml-demo-sqlserver   "/bin/sh -c /opt/mss…"   2 seconds ago   Up 1 second   0.0.0.0:1433->1433/tcp, :::1433->1433/tcp   i2b2-data-saml-demo
 ```
 
-From the above example output, the container ID is ***c8f5d7d22e32***.
-
-Execute the following command to persist the container state to the image:
+The container ID is **fa2fe1240e1d** in this example.  execute the following command to save the state of the container to the image:
 
 ```
-docker commit c8f5d7d22e32 local/i2b2-data-saml-demo-sqlserver
+docker commit fa2fe1240e1d local/i2b2-data-saml-demo-sqlserver
+```
+
+### Docker Container and Image Management
+
+Execute the following to stop the running Docker container:
+
+```
+docker stop i2b2-data-saml-demo
+```
+
+Execute the following to delete the Docker container:
+
+```
+docker rm i2b2-data-saml-demo
+```
+
+Execute the following to delete the Docker image:
+
+```
+docker rmi local/i2b2-data-saml-demo-sqlserver
 ```
