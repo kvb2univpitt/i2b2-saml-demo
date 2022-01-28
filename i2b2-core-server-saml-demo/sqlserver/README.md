@@ -1,72 +1,105 @@
-# i2b2-core-server-saml-demo
+# i2b2-core-server-saml-demo (SQL Server)
 
-A Docker image of the i2b2-core-server (version 1.7.12a) for SAML demonstration.
+A Docker image of Wildfly 17.0.1 containing i2b2 core server ([Release 1.7.12a](https://github.com/i2b2/i2b2-core-server/releases/tag/v1.7.12a.0002)) connecting to SQL Server database for demonstration purposes.
 
-## Ensure i2b2-saml-demo-net Network Exists
+## Docker User-defined Bridge Network
 
-Containers need to be run on the **i2b2-saml-demo-net** network so that they can communicate with each other.
+The container runs on a user-defined bridge network ***i2b2-saml-demo-net***.  The user-defined bridge network provides better isolation and allows containers on the same network to communicate with each other using their container names instead of their IP addresses.
 
-To verify that network **i2b2-saml-demo-net** exists, open up a terminal and execute the following command:
+### Ensure User-defined Bridge Network Exists
+
+To verify that the network ***i2b2-saml-demo-net*** exists, execute the following command to list all of the Docker's networks:
 
 ```
 docker network ls
 ```
 
-You should see **i2b2-saml-demo-net** from the output similar to this:
+The output should be similar to this:
 
 ```
 NETWORK ID     NAME                 DRIVER    SCOPE
-0576db9e5151   bridge               bridge    local
-58593240ad9d   host                 host      local
-52abc9676b47   i2b2-saml-demo-net   bridge    local
-aa3bc8690d35   none                 null      local
+2ed5e4a76f2a   bridge               bridge    local
+bf7e75025889   host                 host      local
+88a9b525113e   i2b2-saml-demo-net   bridge    local
 ```
 
-If the **i2b2-saml-demo-net** network does not exists, execute the following command to create one:
+If ***i2b2-saml-demo-net*** network is **not** listed, execute the following command to create it:
 
 ```
 docker network create i2b2-saml-demo-net
 ```
 
-## Run the Prebuilt Image in a Container
+## Run the Prebuilt Image
+
+A prebuilt Docker image is provided on [Docker Hub](https://hub.docker.com/r/kvb2univpitt/i2b2-core-server-saml-demo-sqlserver).
 
 ### Prerequisites
 
-- [Docker 19.x](https://docs.docker.com/get-docker/)
+- [Docker 19 or above](https://docs.docker.com/get-docker/)
 
-A prebuilt [Docker image](https://hub.docker.com/r/kvb2univpitt/i2b2-core-server-saml-demo) is provided on Docker Hub.  Open up a terminal and execute the following command:
+Open up a terminal and execute the following command to download and run the prebuilt image in a container named ***i2b2-core-server-saml-demo***.
 
-Linux / macOS:
+###### Linux / macOS:
 
 ```
 docker run -d --name=i2b2-core-server-saml-demo \
 --network i2b2-saml-demo-net \
+-e TZ=America/New_York \
 -p 9090:9090 \
-kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.10
+kvb2univpitt/i2b2-core-server-saml-demo-sqlserver:v1.7.12a.2022.01
 ```
 
-Windows:
+###### Windows:
 
 ```
 docker run -d --name=i2b2-core-server-saml-demo ^
 --network i2b2-saml-demo-net ^
+-e TZ=America/New_York ^
 -p 9090:9090 ^
-kvb2univpitt/i2b2-core-server-saml-demo:v1.2021.10
+kvb2univpitt/i2b2-core-server-saml-demo-sqlserver:v1.7.12a.2022.01
+```
+
+### Access Service List
+
+To see the list of all the i2b2 web services, open up a web browser and go to the URL [http://localhost:9090/i2b2/services/listServices](http://localhost:9090/i2b2/services/listServices)
+
+![i2b2 core services](../../img/i2b2-core-service-list.png)
+
+### Docker Container and Image Management
+
+Execute the following to stop the running Docker container:
+
+```
+docker stop i2b2-core-server-saml-demo
+```
+
+Execute the following to delete the Docker container:
+
+```
+docker rm i2b2-core-server-saml-demo
+```
+
+Execute the following to delete the Docker image:
+
+```
+docker rmi kvb2univpitt/i2b2-core-server-saml-demo-sqlserver:v1.7.12a.2022.01
 ```
 
 ## Build the Image
 
 ### Prerequisites
 
-- [Docker 19.x](https://docs.docker.com/get-docker/)
+- [Docker or above](https://docs.docker.com/get-docker/)
 
-Open up a terminal in the directory ***i2b2-core-server-saml-demo***, containing the file **Dockerfile**, and execute the following command to build the Docker image:
+### Build the Docker Image:
+
+Open up a terminal in the directory **i2b2-demo/i2b2-core-server-saml-demo/sqlserver**, where the ***Dockerfile*** file is, and execute the following command to build the image:
 
 ```
-docker build -t local/i2b2-core-server-saml-demo .
+docker build -t local/i2b2-core-server-saml-demo-sqlserver .
 ```
 
-To verify that the image has been buit, execute the following command:
+To verify that the image has been built, execute the following command to list the Docker images:
 
 ```
 docker images
@@ -75,34 +108,64 @@ docker images
 The output should be similar to the following:
 
 ```
-REPOSITORY                         TAG              IMAGE ID       CREATED          SIZE
-local/i2b2-core-server-saml-demo   latest           3bae8a9360d6   14 seconds ago   865MB
+REPOSITORY                                   TAG          IMAGE ID       CREATED          SIZE
+local/i2b2-core-server-saml-demo-sqlserver   latest       8d803b95b31d   23 seconds ago   1.08GB
+kvb2univpitt/centos7-openjdk8                v1.2022.01   d116b30583a9   2 weeks ago      597MB
 ```
 
 ### Run the Image In a Container
 
-Execute the following command to run the image in a Docker container:
+Execute the following command the run the image in a Docker container name ***i2b2-core-server-saml-demo*** on the user-defined bridge network ***i2b2-saml-demo-net***:
 
-Linux / macOS:
+###### Linux / macOS:
 
 ```
 docker run -d --name=i2b2-core-server-saml-demo \
 --network i2b2-saml-demo-net \
+-e TZ=America/New_York \
 -p 9090:9090 \
-local/i2b2-core-server-saml-demo
+local/i2b2-core-server-saml-demo-sqlserver
 ```
 
-Windows:
+###### Windows:
 
 ```
 docker run -d --name=i2b2-core-server-saml-demo ^
 --network i2b2-saml-demo-net ^
+-e TZ=America/New_York ^
 -p 9090:9090 ^
-local/i2b2-core-server-saml-demo
+local/i2b2-core-server-saml-demo-sqlserver
 ```
 
-## Access the Application
+To verify that the container is running, execute the following command to list the Docker containers:
 
-Open up a web browser and go to the following URL to access the list of services:
+```
+docker ps
+```
 
-[http://localhost:9090/i2b2/services/listServices](http://localhost:9090/i2b2/services/listServices)
+The output should be similar to the following:
+
+```
+CONTAINER ID   IMAGE                                        COMMAND                  CREATED         STATUS         PORTS                                       NAMES
+f13f609df232   local/i2b2-core-server-saml-demo-sqlserver   "/opt/wildfly-17.0.1…"   7 seconds ago   Up 7 seconds   0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   i2b2-core-server-saml-demo
+```
+
+### Docker Container and Image Management
+
+Execute the following to stop the running Docker container:
+
+```
+docker stop i2b2-core-server-saml-demo
+```
+
+Execute the following to delete the Docker container:
+
+```
+docker rm i2b2-core-server-saml-demo
+```
+
+Execute the following to delete the Docker image:
+
+```
+docker rmi local/i2b2-core-server-saml-demo-sqlserver
+```
