@@ -1,102 +1,127 @@
 # i2b2-data-saml-demo
 
-A Docker image of the i2b2-data (version 1.7.12a) demo for SAML demonstration.
+A Docker image of PostgreSQL database containing i2b2 demo data ([Release 1.7.12a](https://github.com/i2b2/i2b2-data/releases/tag/v1.7.12a.0001)) for SAML demostration purposes.
 
-## Ensure i2b2-saml-demo-net Network Exists
+## Docker User-defined Bridge Network
 
-Containers need to be run on the **i2b2-saml-demo-net** network so that they can communicate with each other.
+The container runs on a user-defined bridge network ***i2b2-saml-demo-net***.  The user-defined bridge network provides better isolation and allows containers on the same network to communicate with each other using their container names instead of their IP addresses.
 
-To verify that network **i2b2-saml-demo-net** exists, open up a terminal and execute the following command:
+### Ensure User-defined Bridge Network Exists
+
+To verify that the network ***i2b2-saml-demo-net*** exists, execute the following command to list all of the Docker's networks:
 
 ```
 docker network ls
 ```
 
-You should see **i2b2-saml-demo-net** from the output similar to this:
+The output should be similar to this:
 
 ```
 NETWORK ID     NAME                 DRIVER    SCOPE
-0576db9e5151   bridge               bridge    local
-58593240ad9d   host                 host      local
-52abc9676b47   i2b2-saml-demo-net   bridge    local
-aa3bc8690d35   none                 null      local
+9ea1de540506   bridge               bridge    local
+bf7e75025889   host                 host      local
+88a9b525113e   i2b2-saml-demo-net   bridge    local
 ```
 
-If the **i2b2-saml-demo-net** network does not exists, execute the following command to create one:
+If ***i2b2-saml-demo-net*** network is **not** listed, execute the following command to create it:
 
 ```
 docker network create i2b2-saml-demo-net
 ```
 
-## Run the Prebuilt Image in a Container
+## Run the Prebuilt Image
+
+A prebuilt Docker image is provided on [Docker Hub](https://hub.docker.com/r/kvb2univpitt/i2b2-data-saml-demo-postgresql).
 
 ### Prerequisites
 
-- [Docker 19.x](https://docs.docker.com/get-docker/)
+- [Docker 19 or above](https://docs.docker.com/get-docker/)
 
-A prebuilt [Docker image](https://hub.docker.com/r/kvb2univpitt/i2b2-data-saml-demo) is provided on Docker Hub.  Open up a terminal and execute the following command:
+Open up a terminal and execute the following command to download and run the prebuilt image in a container named ***i2b2-data-saml-demo***.
 
-Linux / macOS:
+###### Linux / macOS:
 
 ```
 docker run -d --name=i2b2-data-saml-demo \
 --network i2b2-saml-demo-net \
 -e POSTGRESQL_ADMIN_PASSWORD=demouser \
 -p 5432:5432 \
-kvb2univpitt/i2b2-data-saml-demo:v1.2021.10
+kvb2univpitt/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
 ```
 
-Windows:
+###### Windows:
 
 ```
 docker run -d --name=i2b2-data-saml-demo ^
 --network i2b2-saml-demo-net ^
 -e POSTGRESQL_ADMIN_PASSWORD=demouser ^
 -p 5432:5432 ^
-kvb2univpitt/i2b2-data-saml-demo:v1.2021.10
+kvb2univpitt/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
 ```
 
-The above command will run PostgreSQL 12 on port 5432 in a Docker container with the following default PostgreSQL admin account:
+### Application Users
 
-| Username | Password |
-|----------|----------|
-| postgres | demouser |
+Below is a list of user accounts for logging into the i2b2 web client:
 
-> The admin account is associated with PostgreSQL and is only used for managing the database.  It is NOT for logging into the i2b2 webclient application.
+| Username              | Password | Type  |
+|-----------------------|----------|-------|
+| demo                  | demouser | local |
+| ckent                 | demouser | local |
+| ckent@dailyplanet.com |          | SAML  |
 
-The following user account can log into the i2b2-webclient application using local login:
+The **local** account means using ***username*** and ***password*** for authentication.  The **SAML** account means using a third-party ***identity provider (IdP)*** for authentication.
 
-| Username | Password |
-|----------|----------|
-| demo     | demouser |
+> Note that the user accounts above is not the database admin account.  
 
-The following user account can log into the i2b2-webclient application using either local login or federated login:
+### Access the Database
 
-| Username | Password |
-|----------|----------|
-| kdanvers | demouser |
-| ckent    | demouser |
+The database can be accessed with any database tool by using the following configurations:
+
+| Attribute | Value     |
+|-----------|-----------|
+| Host      | localhost |
+| Port      | 5432      |
+| Database  | i2b2      |
+| Username  | postgres  |
+| Password  | demouser  |
+
+### Docker Container and Image Management
+
+Execute the following to stop the running Docker container:
+
+```
+docker stop i2b2-data-saml-demo
+```
+
+Execute the following to delete the Docker container:
+
+```
+docker rm i2b2-data-saml-demo
+```
+
+Execute the following to delete the Docker image:
+
+```
+docker rmi kvb2univpitt/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
+```
 
 ## Build the Image
 
 ### Prerequisites
 
-- [Docker 19.x](https://docs.docker.com/get-docker/)
--  Java SDK 8 or higher ([Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) or [OpenJDK](https://adoptopenjdk.net/))
-- [Apache Ant 1.10.x](https://ant.apache.org/bindownload.cgi)
-- [PostgreSQL 12](https://www.postgresql.org/download/)
+- [Docker or above](https://docs.docker.com/get-docker/)
+-  Java SDK 8 ([Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) or [OpenJDK](https://adoptopenjdk.net/))
+- [PostgreSQL](https://www.postgresql.org/download/)
 
 ### Build the Docker Image:
 
-Open up a terminal in the directory ***i2b2-data-demo***, containing the file **Dockerfile**, and execute the following command:
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql**, where the ***Dockerfile*** file is, and execute the following command to build the image:
 
 ```
-docker build -t local/i2b2-data-saml-demo .
+docker build -t local/i2b2-data-saml-demo-postgresql .
 ```
 
-The above command will build a Docker image with CentOS 7 and PostgreSQL 12 installed.
-
-To verify that the image has been buit, execute the following command:
+To verify that the image has been built, execute the following command to list the Docker images:
 
 ```
 docker images
@@ -105,59 +130,57 @@ docker images
 The output should be similar to the following:
 
 ```
-REPOSITORY                      TAG              IMAGE ID       CREATED              SIZE
-local/i2b2-data-saml-demo       latest           71d1fd83981e   About a minute ago   541MB
-centos/postgresql-12-centos7    latest           d12590213acd   13 days ago          372MB
+REPOSITORY                             TAG       IMAGE ID       CREATED         SIZE
+local/i2b2-data-saml-demo-postgresql   latest    6d2894938264   9 minutes ago   548MB
+centos/postgresql-12-centos7           latest    ead3e66c2b54   6 months ago    372MB
 ```
 
 ### Run the Image In a Container
 
-Execute the following command:
+Execute the following command the run the image in a Docker container name ***i2b2-data-saml-demo*** on the user-defined bridge network ***i2b2-saml-demo-net***:
 
-Linux / macOS:
+###### Linux / macOS:
 
 ```
 docker run -d --name=i2b2-data-saml-demo \
 --network i2b2-saml-demo-net \
 -e POSTGRESQL_ADMIN_PASSWORD=demouser \
 -p 5432:5432 \
-local/i2b2-data-saml-demo
+local/i2b2-data-saml-demo-postgresql
 ```
 
-Windows:
+###### Windows:
 
 ```
 docker run -d --name=i2b2-data-saml-demo ^
 --network i2b2-saml-demo-net ^
 -e POSTGRESQL_ADMIN_PASSWORD=demouser ^
 -p 5432:5432 ^
-local/i2b2-data-saml-demo
+local/i2b2-data-saml-demo-postgresql
 ```
 
-The above command will run PostgreSQL on port 5432 in a Docker container.
-
-To verify that PostgreSQL is running in a container, execute the following command:
+To verify that the container is running, execute the following command to list the Docker containers:
 
 ```
 docker ps
 ```
 
-You should see the output similar to this:
+The output should be similar to the following:
 
 ```
-CONTAINER ID   IMAGE                       COMMAND                  CREATED         STATUS        PORTS                                       NAMES
-44e1d3165627   local/i2b2-data-saml-demo   "container-entrypoin…"   2 seconds ago   Up 1 second   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   i2b2-data-saml-demo
+CONTAINER ID   IMAGE                                  COMMAND                  CREATED              STATUS              PORTS                                       NAMES
+e06a79a143cb   local/i2b2-data-saml-demo-postgresql   "container-entrypoin…"   About a minute ago   Up About a minute   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   i2b2-data-saml-demo
 ```
 
-### Create Database i2b2 and Database Users
+### Create i2b2 Database and Users
 
-Open up a terminal in the directory ***i2b2-data-demo*** and execute the following command the run the SQL script to create a database called **i2b2** along with the database users:
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql**.  Execute the following command to run PostgreSQL to execute the SQL script that creates i2b2 database and i2b2 database users:
 
 ```
 psql postgresql://postgres:demouser@localhost:5432/postgres -f ./resources/create_database.sql
 ```
 
-You should see the following output:
+The output should be similar to the following:
 
 ```
 CREATE DATABASE
@@ -176,19 +199,15 @@ GRANT
 GRANT
 ```
 
-> The i2b2 database users are associated with the i2b2 database and are used by the i2b2 core-server to access the database.
+### Import the i2b2 Demo Data into the Database
 
-### Insert i2b2 Demo Data to the Database
-
-#### Download the i2b2 Software
-
-Download the [i2b2-data-1.7.12a.0001.zip](https://github.com/i2b2/i2b2-data/archive/refs/tags/v1.7.12a.0001.zip) and unzip the file to the directory ***i2b2-data-saml-demo***.
+Download the zip file [i2b2-data-1.7.12a.0001.zip](https://github.com/i2b2/i2b2-data/archive/refs/tags/v1.7.12a.0001.zip) and extract it to the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql**.
 
 #### Copy the Database Property Files to the i2b2-data Software
 
-Open up a terminal in the directory ***i2b2-data-saml-demo***, where the **i2b2-data-1.7.12a.0001.zip** was extracted.  Execute the following command to copy the database property files over:
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql**, where the ***i2b2-data-1.7.12a.0001.zip*** was extracted, and execute the following command to copy the database property files over:
 
-Linux / macOS:
+###### Linux / macOS:
 
 ```
 cp ./resources/db_configs/Crcdata/db.properties ./i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Crcdata/
@@ -199,7 +218,7 @@ cp ./resources/db_configs/Pmdata/db.properties ./i2b2-data-1.7.12a.0001/edu.harv
 cp ./resources/db_configs/Workdata/db.properties ./i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Workdata/
 ```
 
-Windows:
+###### Windows:
 
 ```
 copy ./resources/db_configs/Crcdata/db.properties ./i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Crcdata/
@@ -210,11 +229,11 @@ copy ./resources/db_configs/Pmdata/db.properties ./i2b2-data-1.7.12a.0001/edu.ha
 copy ./resources/db_configs/Workdata/db.properties ./i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Workdata/
 ```
 
-#### Run the Ant Scripts
+#### Run the Ant Script to Import the i2b2 Demo Data
 
-Execute the following command to run the ant script to insert the i2b2 demo data into the database:
+Execute the following command to run the ant script to import the i2b2 demo data into the database:
 
-Linux / macOS:
+###### Linux / macOS:
 
 ```
 ./i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/apache-ant/bin/ant \
@@ -222,7 +241,7 @@ Linux / macOS:
 create_database load_demodata
 ```
 
-Windows:
+###### Windows:
 
 ```
 ./i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/apache-ant/bin/ant ^
@@ -232,35 +251,32 @@ create_database load_demodata
 
 The process should take about 15-20 minutes, depending on how fast your computer is.
 
-#### Run the SQL Scripts
+### Add Additional Web Client User Accounts
 
-##### Add Additional Local Users
+The databause currently has the following user account for logging into the web client:
 
-Currently, the database has the following user account for logging into the i2b2-webclient application:
+| Username              | Password | Type  |
+|-----------------------|----------|-------|
+| demo                  | demouser | local |
 
-| Username | Password |
-|----------|----------|
-| demo     | demouser |
+The following additional user accounts will be added to the database for logging into the web client:
 
-Execute the following command to add additional users that can log into the i2b2-webclient application either using local login or federated login:
+| Username              | Password | Type  |
+|-----------------------|----------|-------|
+| ckent                 | demouser | local |
+| ckent@dailyplanet.com |          | SAML  |
+
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql** and execute the following command to run PostgreSQL to execute the SQL script that adds additional user accounts:
 
 ```
 psql postgresql://postgres:demouser@localhost:5432/i2b2 -f ./resources/users.sql
 ```
 
-The following additional user accounts will be added to the database:
+### Update the pm_cell_data Table
 
-| Username | Password | EPPN (SAML unique ID)                      | First Name | Last Name |
-|----------|----------|--------------------------------------------|------------|-----------|
-| kdanvers | demouser | karadanvers@catco.com                      | Kara       | Danvers   |
-| ckent    | demouser | ckent@dailyplanet.com, clarkkent@catco.com | Clark      | Kent      |
+The **pm_cell_data** table contains URLs used by the i2b2 web client to communicate with the i2b2 core server. In this setup, the Apache JServ Protocol (AJP) is used for communication between Wildfly and the Apache web server.  In other words, the i2b2 web client ***does not*** communicate directly to the i2b2 core server.  Instead, the web client sends the request to itself on a designated path that gets proxy over to the i2b2 core server.
 
-
-##### Update the pm_cell_data Table
-
-The i2b2 webclient requests will no longer be made directly to the i2b2 hives (Wildfly server).  All of the requests will be proxy over to the Wildfly server from the Apache server that is hosting the i2b2 webclient. The urls in the **pm_cell_data** table must be updated.
-
-Open up a terminal in the directory ***i2b2-data-saml-demo*** and execute the following command to run the SQL script to update the **pm_cell_data** table:
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql** and execute the following command to run PostgreSQL to execute the SQL script that updates the URLs in the **pm_cell_data** table:
 
 ```
 psql postgresql://postgres:demouser@localhost:5432/i2b2 -f ./resources/update_tables.sql
@@ -268,25 +284,43 @@ psql postgresql://postgres:demouser@localhost:5432/i2b2 -f ./resources/update_ta
 
 ### Save the Docker Container State to the Docker Image
 
-After the i2b2 demo data has been inserted into the database, we need to persist the changes to the Docker image so that the demo data is still there when we rerun the imagine in a container.
+The changes made to the Docker container need to be saved to the Docker image so that the data is still there when the image is launched into a new container.
 
-To save the Docker container state to the Docker image, we first need the **container ID**.  Execute the following command to get the container ID:
+The container ID is required to commit the changes to the image.  Execute the following to get the container ID:
 
 ```
 docker ps
 ```
 
-The output similar to this:
+The output should be similar to the following:
 
 ```
-CONTAINER ID   IMAGE                       COMMAND                  CREATED       STATUS          PORTS                                       NAMES
-44e1d3165627   local/i2b2-data-saml-demo   "container-entrypoin…"   4 hours ago   Up 27 minutes   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   i2b2-data-saml-demo
+CONTAINER ID   IMAGE                                  COMMAND                  CREATED              STATUS              PORTS                                       NAMES
+e06a79a143cb   local/i2b2-data-saml-demo-postgresql   "container-entrypoin…"   About a minute ago   Up About a minute   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   i2b2-data-saml-demo
 ```
 
-From the above example output, the container ID is ***44e1d3165627***.
-
-Execute the following command to persist the container state to the image:
+The container ID is **e06a79a143cb** in this example.  execute the following command to save the state of the container to the image:
 
 ```
-docker commit 44e1d3165627 local/i2b2-data-saml-demo
+docker commit e06a79a143cb local/i2b2-data-saml-demo-postgresql
+```
+
+### Docker Container and Image Management
+
+Execute the following to stop the running Docker container:
+
+```
+docker stop i2b2-data-saml-demo
+```
+
+Execute the following to delete the Docker container:
+
+```
+docker rm i2b2-data-saml-demo
+```
+
+Execute the following to delete the Docker image:
+
+```
+docker rmi local/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
 ```
