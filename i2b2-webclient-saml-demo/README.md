@@ -17,10 +17,10 @@ docker network ls
 The output should be similar to this:
 
 ```
-NETWORK ID     NAME            DRIVER    SCOPE
-d86843421945   bridge          bridge    local
-58593240ad9d   host            host      local
-9a82abc00473   i2b2-saml-demo-net   bridge    local
+NETWORK ID     NAME                 DRIVER    SCOPE
+9ea1de540506   bridge               bridge    local
+bf7e75025889   host                 host      local
+88a9b525113e   i2b2-saml-demo-net   bridge    local
 ```
 
 If ***i2b2-saml-demo-net*** network is **not** listed, execute the following command to create it:
@@ -88,7 +88,7 @@ Once logged in, the browser will redirect to the landing page:
 
 #### SAML Login
 
-SAML login requires [i2b2-idp-saml-demo](i2b2-idp-saml-demo) Docker running.
+SAML login requires [i2b2-idp-saml-demo](../i2b2-idp-saml-demo) Docker running.
 
 Select ***SAML Demo*** from the **i2b2 Host:** drop down.
 
