@@ -1,6 +1,6 @@
 # i2b2-idp-saml-demo
 
-A preconfigured SAML 2.0 identity provider (Idp) Docker image for demonstration i2b2 federated login.
+A Docker image of identity provider (IdP) for demonstration purposes.
 
 The following platforms are used:
 
@@ -34,51 +34,44 @@ The IdP contains the following user accounts:
 | karadanvers | supergirl | karadanvers | karadanvers@catco.com | staff       | karadanvers@catco.com | Kara       | Danvers   | Kara Zor-El         |
 | clarkkent   | superman  | clarkkent   | clarkkent@catco.com   | staff       | clarkkent@catco.com   | Clark      | Kent      | Kal-El              |
 
-### Access the Identity Provider (IdP)
+## Docker User-defined Bridge Network
 
-Open up a web browser and go to the URL [http://localhost:8080/simplesaml](http://localhost:8080/simplesaml).
+The container runs on a user-defined bridge network ***i2b2-saml-demo-net***.  The user-defined bridge network provides better isolation and allows containers on the same network to communicate with each other using their container names instead of their IP addresses.
 
-Below is the admin account:
+### Ensure User-defined Bridge Network Exists
 
-| Username | Password |
-|----------|----------|
-| admin    | demouser |
-
-## Ensure i2b2-saml-demo-net Network Exists
-
-Containers need to be run on the **i2b2-saml-demo-net** network so that they can communicate with each other.
-
-To verify that network **i2b2-saml-demo-net** exists, open up a terminal and execute the following command:
+To verify that the network ***i2b2-saml-demo-net*** exists, execute the following command to list all of the Docker's networks:
 
 ```
 docker network ls
 ```
 
-You should see **i2b2-saml-demo-net** from the output similar to this:
+The output should be similar to this:
 
 ```
-NETWORK ID     NAME                 DRIVER    SCOPE
-0576db9e5151   bridge               bridge    local
-58593240ad9d   host                 host      local
-52abc9676b47   i2b2-saml-demo-net   bridge    local
-aa3bc8690d35   none                 null      local
+NETWORK ID     NAME            DRIVER    SCOPE
+d86843421945   bridge          bridge    local
+58593240ad9d   host            host      local
+9a82abc00473   i2b2-saml-demo-net   bridge    local
 ```
 
-If the **i2b2-saml-demo-net** network does not exists, execute the following command to create one:
+If ***i2b2-saml-demo-net*** network is **not** listed, execute the following command to create it:
 
 ```
 docker network create i2b2-saml-demo-net
 ```
 
-## Run the Prebuilt Image in a Container
+## Run the Prebuilt Image
+
+A prebuilt Docker image is provided on [Docker Hub](https://hub.docker.com/r/kvb2univpitt/i2b2-idp-saml-demo).
 
 ### Prerequisites
 
-- [Docker 19.x](https://docs.docker.com/get-docker/)
+- [Docker 19 or above](https://docs.docker.com/get-docker/)
 
-A prebuilt [Docker image](https://hub.docker.com/r/kvb2univpitt/i2b2-idp-saml-demo) is provided on Docker Hub.  Open up a terminal and execute the following command:
+Open up a terminal and execute the following command to download and run the prebuilt image in a container named ***i2b2-idp-saml-demo***.
 
-Linux / macOS:
+###### Linux / macOS:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo \
@@ -86,10 +79,10 @@ docker run -d --name=i2b2-idp-saml-demo \
 -p 8080:8080 \
 -p 8443:8443 \
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser \
-kvb2univpitt/i2b2-idp-saml-demo:v1.2021.10
+kvb2univpitt/i2b2-idp-saml-demo:v1.7.12a.2022.01
 ```
 
-Windows:
+###### Windows:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo ^
@@ -97,22 +90,53 @@ docker run -d --name=i2b2-idp-saml-demo ^
 -p 8080:8080 ^
 -p 8443:8443 ^
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser ^
-kvb2univpitt/i2b2-idp-saml-demo:v1.2021.10
+kvb2univpitt/i2b2-idp-saml-demo:v1.7.12a.2022.01
 ```
 
+### Access the Identity Provider (IdP)
+
+Open up a web browser and go to the URL [http://localhost:8080/simplesaml](http://localhost:8080/simplesaml).
+
+To configure the IdP, [sign in](http://localhost:8080/simplesaml/module.php/core/login-admin.php?ReturnTo=http%3A%2F%2Flocalhost%3A8080%2Fsimplesaml%2Fmodule.php%2Fcore%2Ffrontpage_federation.php) using the following admin credentials:
+
+| Username | Password |
+|----------|----------|
+| admin    | demouser |
+
+### Docker Container and Image Management
+
+Execute the following to stop the running Docker container:
+
+```
+docker stop i2b2-idp-saml-demo
+```
+
+Execute the following to delete the Docker container:
+
+```
+docker rm i2b2-idp-saml-demo
+```
+
+Execute the following to delete the Docker image:
+
+```
+docker rmi kvb2univpitt/i2b2-idp-saml-demo:v1.7.12a.2022.01
+```
 ## Build the Image
 
 ### Prerequisites
 
-- [Docker 19.x](https://docs.docker.com/get-docker/)
+- [Docker or above](https://docs.docker.com/get-docker/)
 
-Open update a terminal the **Dockerfile** is in the directory ***i2b2-idp-saml-demo*** and execute the following command:
+### Build the Docker Image:
+
+Open up a terminal in the directory **i2b2-demo/i2b2-idp-saml-demo**, where the ***Dockerfile*** file is, and execute the following command to build the image:
 
 ```
 docker build -t local/i2b2-idp-saml-demo .
 ```
 
-To verify that the image has been buit, execute the following command:
+To verify that the image has been built, execute the following command to list the Docker images:
 
 ```
 docker images
@@ -121,26 +145,27 @@ docker images
 The output should be similar to the following:
 
 ```
-REPOSITORY                      TAG              IMAGE ID       CREATED             SIZE
-local/i2b2-idp-saml-demo        latest           1ce5b671ff03   39 seconds ago      506MB
-php                             7.4.9-apache     811269837652   10 months ago       414MB
+REPOSITORY                 TAG             IMAGE ID       CREATED          SIZE
+local/i2b2-idp-saml-demo   latest          82611c5d3ede   18 seconds ago   566MB
+php                        7.4.27-apache   4d3d9fe4d89c   6 days ago       469MB
 ```
 
 ### Run the Image In a Container
 
-Linux / macOS:
+Execute the following command the run the image in a Docker container name ***i2b2-idp-saml-demo*** on the user-defined bridge network ***i2b2-saml-demo-net***:
+
+###### Linux / macOS:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo \
 --network i2b2-saml-demo-net \
 -p 8080:8080 \
 -p 8443:8443 \
-
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser \
 local/i2b2-idp-saml-demo
 ```
 
-Windows:
+###### Windows:
 
 ```
 docker run -d --name=i2b2-idp-saml-demo ^
@@ -149,4 +174,36 @@ docker run -d --name=i2b2-idp-saml-demo ^
 -p 8443:8443 ^
 -e SIMPLESAMLPHP_ADMIN_PASSWORD=demouser ^
 local/i2b2-idp-saml-demo
+```
+
+To verify that the container is running, execute the following command to list the Docker containers:
+
+```
+docker ps
+```
+
+The output should be similar to the following:
+
+```
+bca9e4ef64fe   local/i2b2-idp-saml-demo   "docker-php-entrypoi…"   2 seconds ago   Up 2 seconds   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 80/tcp, 0.0.0.0:8443->8443/tcp, :::8443->8443/tcp   i2b2-idp-saml-demo
+```
+
+### Docker Container and Image Management
+
+Execute the following to stop the running Docker container:
+
+```
+docker stop i2b2-idp-saml-demo
+```
+
+Execute the following to delete the Docker container:
+
+```
+docker rm i2b2-idp-saml-demo
+```
+
+Execute the following to delete the Docker image:
+
+```
+docker rmi local/i2b2-idp-saml-demo
 ```
