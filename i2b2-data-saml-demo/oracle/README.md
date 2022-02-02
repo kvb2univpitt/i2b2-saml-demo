@@ -1,6 +1,6 @@
-# i2b2-data-saml-demo (PostgreSQL)
+# i2b2-data-saml-demo (Oracle)
 
-A Docker image of PostgreSQL database containing i2b2 demo data ([Release 1.7.12a](https://github.com/i2b2/i2b2-data/releases/tag/v1.7.12a.0001)) for SAML demostration purposes.
+A Docker image of Oracle database containing i2b2 demo data ([Release 1.7.12a](https://github.com/i2b2/i2b2-data/releases/tag/v1.7.12a.0001)) for demonstration purposes.
 
 ## Docker User-defined Bridge Network
 
@@ -31,7 +31,7 @@ docker network create i2b2-saml-demo-net
 
 ## Run the Prebuilt Image
 
-A prebuilt Docker image is provided on [Docker Hub](https://hub.docker.com/r/kvb2univpitt/i2b2-data-saml-demo-postgresql).
+A prebuilt Docker image is provided on [Docker Hub](https://hub.docker.com/r/kvb2univpitt/i2b2-data-saml-demo-oracle).
 
 ### Prerequisites
 
@@ -42,34 +42,32 @@ Open up a terminal and execute the following command to download and run the pre
 ###### Linux / macOS:
 
 ```
-docker run -d --name=i2b2-data-saml-demo \
+docker run -d --name i2b2-data-saml-demo \
 --network i2b2-saml-demo-net \
--e POSTGRESQL_ADMIN_PASSWORD=demouser \
--p 5432:5432 \
-kvb2univpitt/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
+--shm-size="4G" \
+-p 1521:1521 -p 5500:5500 \
+-e ORACLE_PWD=demouser \
+kvb2univpitt/i2b2-data-saml-demo-oracle:v1.7.12a.2022.01
 ```
 
 ###### Windows:
 
 ```
-docker run -d --name=i2b2-data-saml-demo ^
+docker run -d --name i2b2-data-saml-demo ^
 --network i2b2-saml-demo-net ^
--e POSTGRESQL_ADMIN_PASSWORD=demouser ^
--p 5432:5432 ^
-kvb2univpitt/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
+--shm-size="4G" ^
+-p 1521:1521 -p 5500:5500 ^
+-e ORACLE_PWD=demouser ^
+kvb2univpitt/i2b2-data-saml-demo-oracle:v1.7.12a.2022.01
 ```
 
 ### Application Users
 
 Below is a list of user accounts for logging into the i2b2 web client:
 
-| Username              | Password | Type  |
-|-----------------------|----------|-------|
-| demo                  | demouser | local |
-| ckent                 | demouser | local |
-| ckent@dailyplanet.com |          | SAML  |
-
-The **local** account means using ***username*** and ***password*** for authentication.  The **SAML** account means using a third-party ***identity provider (IdP)*** for authentication.
+| Username | Password |
+|----------|----------|
+| demo     | demouser |
 
 > Note that the user accounts above is not the database admin account.
 
@@ -77,13 +75,13 @@ The **local** account means using ***username*** and ***password*** for authenti
 
 The database can be accessed with any database tool by using the following configurations:
 
-| Attribute | Value     |
-|-----------|-----------|
-| Host      | localhost |
-| Port      | 5432      |
-| Database  | i2b2      |
-| Username  | postgres  |
-| Password  | demouser  |
+| Attribute      | Value     |
+|----------------|-----------|
+| Host           | localhost |
+| Port           | 1521      |
+| Database (SID) | xe        |
+| Username       | system    |
+| Password       | demouser  |
 
 ### Docker Container and Image Management
 
@@ -102,7 +100,7 @@ docker rm i2b2-data-saml-demo
 Execute the following to delete the Docker image:
 
 ```
-docker rmi kvb2univpitt/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
+docker rmi kvb2univpitt/i2b2-data-saml-demo-oracle:v1.7.12a.2022.01
 ```
 
 ## Build the Image
@@ -111,15 +109,13 @@ docker rmi kvb2univpitt/i2b2-data-saml-demo-postgresql:v1.7.12a.2022.01
 
 - [Docker or above](https://docs.docker.com/get-docker/)
 -  Java SDK 8 ([Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) or [OpenJDK](https://adoptopenjdk.net/))
-- [PostgreSQL](https://www.postgresql.org/download/)
+- [Oracle Instant Client](https://www.oracle.com/database/technologies/instant-client/downloads.html)
 
 ### Build the Docker Image:
 
-Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql**, where the ***Dockerfile*** file is, and execute the following command to build the image:
+Follow the instruction on how to build and run [Oracle Docker Images](https://github.com/oracle/docker-images/blob/main/OracleDatabase/SingleInstance/README.md).
 
-```
-docker build -t local/i2b2-data-saml-demo-postgresql .
-```
+ >In this demo, Oracle database version **11.2.0.2-xe** is used.  You will need to download ***oracle-xe-11.2.0-1.0.x86_64.rpm.zip*** file separately.
 
 To verify that the image has been built, execute the following command to list the Docker images:
 
@@ -130,33 +126,33 @@ docker images
 The output should be similar to the following:
 
 ```
-REPOSITORY                             TAG       IMAGE ID       CREATED         SIZE
-local/i2b2-data-saml-demo-postgresql   latest    6d2894938264   9 minutes ago   548MB
-centos/postgresql-12-centos7           latest    ead3e66c2b54   6 months ago    372MB
+REPOSITORY        TAG           IMAGE ID       CREATED          SIZE
+oracle/database   11.2.0.2-xe   72df7424fd41   34 minutes ago   1.15GB
+oraclelinux       7-slim        4133e87bc7fa   2 weeks ago      132MB
 ```
 
 ### Run the Image In a Container
 
-Execute the following command the run the image in a Docker container name ***i2b2-data-saml-demo*** on the user-defined bridge network ***i2b2-saml-demo-net***:
+Execute the following command the run the Docker image **oracle/database:11.2.0.2-xe** in a Docker container name ***i2b2-data-saml-demo***:
 
 ###### Linux / macOS:
 
 ```
-docker run -d --name=i2b2-data-saml-demo \
---network i2b2-saml-demo-net \
--e POSTGRESQL_ADMIN_PASSWORD=demouser \
--p 5432:5432 \
-local/i2b2-data-saml-demo-postgresql
+docker run -d --name i2b2-data-saml-demo \
+--shm-size="4G" \
+-p 1521:1521 -p 5500:5500 \
+-e ORACLE_PWD=demouser \
+oracle/database:11.2.0.2-xe
 ```
 
 ###### Windows:
 
 ```
-docker run -d --name=i2b2-data-saml-demo ^
---network i2b2-saml-demo-net ^
--e POSTGRESQL_ADMIN_PASSWORD=demouser ^
--p 5432:5432 ^
-local/i2b2-data-saml-demo-postgresql
+docker run -d --name i2b2-data-saml-demo ^
+--shm-size="4G" ^
+-p 1521:1521 -p 5500:5500 ^
+-e ORACLE_PWD=demouser ^
+oracle/database:11.2.0.2-xe
 ```
 
 To verify that the container is running, execute the following command to list the Docker containers:
@@ -168,44 +164,69 @@ docker ps
 The output should be similar to the following:
 
 ```
-CONTAINER ID   IMAGE                                  COMMAND                  CREATED              STATUS              PORTS                                       NAMES
-e06a79a143cb   local/i2b2-data-saml-demo-postgresql   "container-entrypoin…"   About a minute ago   Up About a minute   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   i2b2-data-saml-demo
+CONTAINER ID   IMAGE                         COMMAND                  CREATED         STATUS                            PORTS                                                                                  NAMES
+2af16c8d74b2   oracle/database:11.2.0.2-xe   "/bin/sh -c 'exec $O…"   7 seconds ago   Up 6 seconds (health: starting)   0.0.0.0:1521->1521/tcp, :::1521->1521/tcp, 0.0.0.0:5500->5500/tcp, :::5500->5500/tcp   i2b2-data-saml-demo
+```
+
+### Changing Datafile Size
+
+The ***MAXBYTES*** for the datafile ***/u01/app/oracle/oradata/XE/system.dbf*** is **629,145,600** bytes.  It is not enough for importing the i2b2 data.  Execute the following command to run the Oracle client to execute the SQL script that will increase the size to **34,359,721,984** bytes
+
+```
+sqlplus system/demouser@localhost:1521/xe @./resources/change_datafile_size.sql
+```
+
+To verify, run the following query:
+
+```sql
+SELECT FILE_NAME,MAXBYTES FROM DBA_DATA_FILES WHERE TABLESPACE_NAME='SYSTEM';
 ```
 
 ### Create i2b2 Database and Users
 
-Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql**.  Execute the following command to run PostgreSQL to execute the SQL script that creates i2b2 database and i2b2 database users:
+Open up a terminal in the directory **i2b2-demo/i2b2-data-saml-demo/oracle**.  Execute the following command to run Oracle client to execute the SQL script that creates i2b2 database and i2b2 database users:
 
 ```
-psql postgresql://postgres:demouser@localhost:5432/postgres -f ./resources/create_database.sql
+sqlplus system/demouser@localhost:1521/xe @./resources/create_database.sql
 ```
 
 The output should be similar to the following:
 
 ```
-CREATE DATABASE
-CREATE ROLE
-CREATE ROLE
-CREATE ROLE
-CREATE ROLE
-CREATE ROLE
-CREATE ROLE
-GRANT
-GRANT
-GRANT
-GRANT
-GRANT
-GRANT
-GRANT
+SQL*Plus: Release 21.0.0.0.0 - Production on Wed Feb 2 13:00:31 2022
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Connected to:
+Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
+
+User created.
+User created.
+User created.
+User created.
+User created.
+User created.
+
+Grant succeeded.
+Grant succeeded.
+Grant succeeded.
+Grant succeeded.
+Grant succeeded.
+Grant succeeded.
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
 ```
 
 ### Import the i2b2 Demo Data into the Database
 
-Download the zip file [i2b2-data-1.7.12a.0001.zip](https://github.com/i2b2/i2b2-data/archive/refs/tags/v1.7.12a.0001.zip) and extract it to the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql**.
+Download the zip file [i2b2-data-1.7.12a.0001.zip](https://github.com/i2b2/i2b2-data/archive/refs/tags/v1.7.12a.0001.zip) and extract it to the directory **i2b2-demo/i2b2-data-saml-demo/oracle**.
 
 #### Copy the Database Property Files to the i2b2-data Software
 
-Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql**, where the ***i2b2-data-1.7.12a.0001.zip*** was extracted, and execute the following command to copy the database property files over:
+Open up a terminal in the directory **i2b2-demo/i2b2-data-saml-demo/oracle**, where the ***i2b2-data-1.7.12a.0001.zip*** was extracted, and execute the following command to copy the database property files over:
 
 ###### Linux / macOS:
 
@@ -266,20 +287,20 @@ The following additional user accounts will be added to the database for logging
 | ckent                 | demouser | local |
 | ckent@dailyplanet.com |          | SAML  |
 
-Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql** and execute the following command to run PostgreSQL to execute the SQL script that adds additional user accounts:
+Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/oracle** and execute the following command to run Oracle client to execute the SQL script that adds additional user accounts:
 
 ```
-psql postgresql://postgres:demouser@localhost:5432/i2b2 -f ./resources/users.sql
+sqlplus system/demouser@localhost:1521/xe @./resources/users.sql
 ```
 
 ### Update the pm_cell_data Table
 
 The **pm_cell_data** table contains URLs used by the i2b2 web client to communicate with the i2b2 core server. In this setup, the Apache JServ Protocol (AJP) is used for communication between Wildfly and the Apache web server.  In other words, the i2b2 web client ***does not*** communicate directly to the i2b2 core server.  Instead, the web client sends the request to itself on a designated path that gets proxy over to the i2b2 core server.
 
-Open up a terminal in the directory **i2b2-saml-demo/i2b2-data-saml-demo/postgresql** and execute the following command to run PostgreSQL to execute the SQL script that updates the URLs in the **pm_cell_data** table:
+Open up a terminal in the directory **i2b2-demo/i2b2-data-saml-demo/oracle** and execute the following command to run Oracle client to execute the SQL script that updates the IP address to the container name in the **pm_cell_data** table:
 
 ```
-psql postgresql://postgres:demouser@localhost:5432/i2b2 -f ./resources/update_tables.sql
+sqlplus system/demouser@localhost:1521/xe @./resources/update_tables.sql
 ```
 
 ### Save the Docker Container State to the Docker Image
@@ -295,14 +316,14 @@ docker ps
 The output should be similar to the following:
 
 ```
-CONTAINER ID   IMAGE                                  COMMAND                  CREATED              STATUS              PORTS                                       NAMES
-e06a79a143cb   local/i2b2-data-saml-demo-postgresql   "container-entrypoin…"   About a minute ago   Up About a minute   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   i2b2-data-saml-demo
+CONTAINER ID   IMAGE                         COMMAND                  CREATED         STATUS                            PORTS                                                                                  NAMES
+2af16c8d74b2   oracle/database:11.2.0.2-xe   "/bin/sh -c 'exec $O…"   7 seconds ago   Up 6 seconds (health: starting)   0.0.0.0:1521->1521/tcp, :::1521->1521/tcp, 0.0.0.0:5500->5500/tcp, :::5500->5500/tcp   i2b2-data-saml-demo
 ```
 
-The container ID is **e06a79a143cb** in this example.  execute the following command to save the state of the container to the image:
+The container ID is **2af16c8d74b2** in this example.  execute the following command to save the state of the container to the image:
 
 ```
-docker commit e06a79a143cb local/i2b2-data-saml-demo-postgresql
+docker commit 2af16c8d74b2 local/i2b2-data-saml-demo-oracle
 ```
 
 ### Docker Container and Image Management
@@ -322,5 +343,5 @@ docker rm i2b2-data-saml-demo
 Execute the following to delete the Docker image:
 
 ```
-docker rmi local/i2b2-data-saml-demo-postgresql
+docker rmi local/i2b2-data-saml-demo-oracle
 ```

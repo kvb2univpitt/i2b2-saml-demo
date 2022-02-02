@@ -301,7 +301,7 @@ The process should take about 15-20 minutes, depending on how fast your computer
 
 ### Add Additional Web Client User Accounts
 
-The databause currently has the following user account for logging into the web client:
+The database currently has the following user account for logging into the web client:
 
 | Username              | Password | Type  |
 |-----------------------|----------|-------|
