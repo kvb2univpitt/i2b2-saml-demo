@@ -366,7 +366,7 @@ local   all             all                                     peer
 host    all             all             127.0.0.1/32            md5
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
-
+host    all             all             0.0.0.0/0               trust
 ```
 
 #### Adding to Systemd Services
@@ -397,4 +397,147 @@ Reload the firewall policy
 
 ```
 sudo firewall-cmd --reload
+```
+
+## Installing i2b2
+
+### Installing i2b2 Demo Data (PostgreSQL)
+
+#### Creating i2b2 Database and Users
+
+Exectute the following commands to download script to create i2b2 database and users:
+
+```
+sudo curl -s -L -o /tmp/create_database.sql https://raw.githubusercontent.com/kvb2univpitt/i2b2-saml-demo/main/doc/rhel8/create_database.sql
+```
+Create i2b2 database and users:
+
+```
+sudo -i -u postgres psql -f /tmp/create_database.sql
+```
+
+You should see the output similar to this:
+
+```
+CREATE DATABASE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+```
+
+Remove temporary file:
+
+```
+sudo rm -rf /tmp/create_database.sql
+```
+
+#### Importing i2b2 Data
+
+##### Downloading i2b2 Demo Data
+
+Execute the following command to download i2b2 demo data:
+
+```
+sudo curl -s -L -o /tmp/v1.7.12a.0001.zip \
+https://github.com/i2b2/i2b2-data/archive/refs/tags/v1.7.12a.0001.zip
+```
+
+Extract the zip file:
+
+```
+sudo unzip /tmp/v1.7.12a.0001.zip -d /opt/
+```
+
+Remove temporary file:
+
+```
+sudo rm -rf /tmp/v1.7.12a.0001.zip
+```
+
+##### Configuring db.properties Files
+
+Modify the file **/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Crcdata/db.properties** as shown below:
+
+```properties
+db.type=postgresql
+db.username=i2b2demodata
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+db.project=demo
+```
+
+Modify the file **/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Hivedata/db.properties** as shown below:
+
+```properties
+db.type=postgresql
+db.username=i2b2hive
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+```
+
+Modify the file **/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Imdata/db.properties** as shown below:
+
+```properties
+db.type=postgresql
+db.username=i2b2imdata
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+```
+
+Modify the file **/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Metadata/db.properties** as shown below:
+
+```properties
+db.type=postgresql
+db.username=i2b2metadata
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+db.project=demo
+db.dimension=OBSERVATION_FACT
+db.schemaname=public
+```
+
+Modify the file **/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Pmdata/db.properties** as shown below:
+
+```properties
+db.type=postgresql
+db.username=i2b2pm
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+db.project=demo
+```
+
+Modify the file **/opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/Workdata/db.properties** as shown below:
+
+```properties
+db.type=postgresql
+db.username=i2b2workdata
+db.password=demouser
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/i2b2
+db.project=demo
+```
+
+##### Import Data
+
+Execute the following command to import i2b2 demo data into the database:
+
+```
+sudo /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/apache-ant/bin/ant \
+-f /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/build.xml \
+create_database load_demodata
 ```
