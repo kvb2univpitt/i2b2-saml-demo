@@ -344,7 +344,7 @@ sudo postgresql-setup --initdb --unit postgresql
 Uncomment line 59 to:
 
 ```
-listen_addresses = 'localhost'         # what IP address(es) to listen on;
+listen_addresses = '*'                  # what IP address(es) to listen on;
 ```
 
 Uncomment line 63 to:
