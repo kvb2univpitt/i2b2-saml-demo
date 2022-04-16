@@ -57,7 +57,7 @@ Apache Ant is required to to import i2b2 data into the database and to build i2b
 Execute the following command to download Apache Ant:
 
 ```
-sudo curl -s -L -o /tmp/apache-ant.tar.gz https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.tar.gz
+sudo curl -s -L -o /tmp/apache-ant.tar.gz https://dlcdn.apache.org/ant/binaries/apache-ant-1.10.12-bin.tar.gz
 ```
 
 Extract Apache Ant to **/usr/local/** directory:
@@ -319,6 +319,20 @@ You should see something similar to the following if Wildfly is running properly
 Apr 13 15:30:36 localhost.localdomain systemd[1]: Started The WildFly Application Server.
 ```
 
+#### Configuring the Firewall
+
+Execute the following command to add port 8080 to the firewall policy permanently:
+
+```
+sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp
+```
+
+Reload the firewall policy
+
+```
+sudo firewall-cmd --reload
+```
+
 ## Installing Database:
 
 ### Installing PostgreSQL Database
@@ -441,9 +455,9 @@ Remove temporary file:
 sudo rm -rf /tmp/create_database.sql
 ```
 
-#### Importing i2b2 Data
+#### Importing the i2b2 Data
 
-##### Downloading i2b2 Demo Data
+##### Downloading the i2b2 Demo Data
 
 Execute the following command to download i2b2 demo data:
 
@@ -540,4 +554,117 @@ Execute the following command to import i2b2 demo data into the database:
 sudo /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/apache-ant/bin/ant \
 -f /opt/i2b2-data-1.7.12a.0001/edu.harvard.i2b2.data/Release_1-7/NewInstall/build.xml \
 create_database load_demodata
+```
+
+Remove temporary folder:
+
+```
+sudo rm -rf /opt/i2b2-data-1.7.12a.0001
+```
+
+### Installing the i2b2 Hive
+
+#### Download the i2b2 Core Server
+
+Execute the following command to download i2b2 demo data:
+
+```
+sudo curl -s -L -o /tmp/v1.7.12a.0002.zip \
+https://github.com/i2b2/i2b2-core-server/archive/refs/tags/v1.7.12a.0002.zip
+```
+
+Extract the zip file:
+
+```
+sudo unzip /tmp/v1.7.12a.0002.zip -d /opt/
+```
+
+Remove temporary file:
+
+```
+sudo rm -rf /tmp/v1.7.12a.0002.zip
+```
+
+#### Configuring Database Properties
+
+Execute the following command to download database configurations:
+
+```
+sudo curl -s -L -o /tmp/core_server_db_configs.zip \
+https://github.com/kvb2univpitt/i2b2-saml-demo/raw/main/doc/rhel8/core_server_db_configs.zip
+```
+
+Extract the zip file:
+
+```
+sudo unzip /tmp/core_server_db_configs.zip -d /opt/
+```
+
+Remove temporary file:
+
+```
+sudo rm -rf /tmp/core_server_db_configs.zip
+```
+
+Copy database configuration files:
+
+```
+sudo cp /opt/core_server_db_configs/crc-ds.xml.postgresql /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.crc/etc/jboss/crc-ds.xml
+sudo cp /opt/core_server_db_configs/im-ds.xml.postgresql /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.im/etc/jboss/im-ds.xml
+sudo cp /opt/core_server_db_configs/ont-ds.xml.postgresql /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.ontology/etc/jboss/ont-ds.xml
+sudo cp /opt/core_server_db_configs/pm-ds.xml.postgresql /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.pm/etc/jboss/pm-ds.xml
+sudo cp /opt/core_server_db_configs/work-ds.xml.postgresql /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.workplace/etc/jboss/work-ds.xml
+```
+
+Remove temporary folder:
+
+```
+sudo rm -rf /opt/core_server_db_configs
+```
+
+#### Configuring Installation Directory
+
+Execute the following command to change the installation directory to Wildfly:
+
+```
+sudo find /opt/i2b2-core-server-1.7.12a.0002/ -type f -name '*.properties' -exec sed -i 's/\/opt\/wildfly-17.0.1.Final/\/opt\/wildfly/g' {} \;
+sudo find /opt/i2b2-core-server-1.7.12a.0002/ -type f -name '*.properties' -exec sed -i 's/\/opt\/wildfly-14.0.1.Final/\/opt\/wildfly/g' {} \;
+```
+
+#### compiling and Building the Core Servers
+
+Execute the following command to compile and build the core servers in Wildfly:
+
+```
+sudo ant -f /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.server-common/build.xml clean dist deploy jboss_pre_deployment_setup
+sudo ant -f /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.crc/master_build.xml clean build-all deploy
+sudo ant -f /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.fr/master_build.xml clean build-all deploy
+sudo ant -f /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.im/master_build.xml clean build-all deploy
+sudo ant -f /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.ontology/master_build.xml clean build-all deploy
+sudo ant -f /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.pm/master_build.xml clean build-all deploy
+sudo ant -f /opt/i2b2-core-server-1.7.12a.0002/edu.harvard.i2b2.workplace/master_build.xml clean build-all deploy
+```
+
+#### Create Deployment File
+
+Execute the following command to create a file for manual deploy mode:
+
+```
+sudo touch /opt/wildfly/standalone/deployments/i2b2.war.dodeploy
+```
+
+#### Change Installation Ownership
+
+Execute the following command to change the ownership from ***root*** to ***wildfly***:
+
+```
+sudo chown -RH wildfly: /opt/wildfly/
+```
+
+#### Restart Wildfly
+
+Execute the following command to restart Wildfly service:
+
+```
+sudo systemctl restart wildfly
 ```
