@@ -52,8 +52,14 @@ sudo dnf -y update
 Add Shibboleth repository:
 
 ```
-sudo wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo -P /etc/yum.repos.d \
-&& yum -y update
+sudo wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo \
+-P /etc/yum.repos.d
+```
+
+Update the repository:
+
+```
+sudo yum -y update
 ```
 
 Install Shibboleth:
@@ -85,14 +91,12 @@ You should see output response that ends with  `overall configuration is loadabl
 #### Confirm Apache functionality:
 
 ```
-sudo apache2ctl configtest
+sudo apachectl configtest
 ```
 
 You should see the output `Syntax OK`.
 
 #### Confirm shibd functionality:
-
-Restart the web server.
 
 Open up a web browser and navigate to ***https://sp.example.org/Shibboleth.sso/Session***.
 
