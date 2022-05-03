@@ -100,9 +100,35 @@ You should see the output `Syntax OK`.
 
 Open up a web browser and navigate to ***https://sp.example.org/Shibboleth.sso/Session***.
 
-> Note: replace sp.example.org with your domain name.
+> Note: replace *sp.example.org* with your domain name.
 
 You should see the message **A valid session was not found.** in your browser.
+
+## Configuring Shibboleth
+
+### Configuring the Apache HTTP Server
+
+Modify the ***shib.conf*** located in the directory **/etc/httpd/conf.d**.
+
+Delete the following configuration:
+
+```
+<Location /secure>
+  AuthType shibboleth
+  ShibRequestSetting requireSession 1
+  require shib-session
+</Location>
+```
+
+Add the following configuration:
+
+```
+<Location />
+  AuthType shibboleth
+  ShibRequestSetting requireSession 0
+  require shibboleth
+</Location>
+```
 
 ### Setting Up Federation Files and Metadata
 
@@ -125,7 +151,7 @@ Modify the attributes of the **ApplicationDefaults** element as follow:
                         attributePrefix="AJP_">
 ```
 
-> Remember to replace sp.example.org with your domain name.
+> Remember to replace *sp.example.org* with your domain name.
 
 ##### Set the IdP Entity ID:
 
@@ -191,3 +217,87 @@ Open up a web browser and navigate to ***https://sp.example.org/Shibboleth.sso/M
 The metadata file contains information about the Service Provider (SP) including the entity ID and the public certificates for signing and encryption.  Regisiter this file with your Identity Provider (IdP).
 
 > Note that the signing certificate and encryption certificate included in the metadata file are from ***/etc/shibboleth/sp-signing-cert.pem*** and ***/etc/shibboleth/sp-encrypt-cert.pem***, respectively.  If you want to use your own certificates, just replace them along with the private keys and regenerate the metadata.
+
+## Configuring the Apache JServ Protocol (AJP)
+
+With the latest version of i2b2, the request to the Hives no longer made directly to the Wilfly.  Instead, the request is made to the Apache HTTP server and then gets proxied via AJP over to Wildfly.
+
+### Configuring the Apache HTTP Server.
+
+Stop the server:
+
+```
+systemctl stop httpd.service
+```
+
+#### Restrict Port 80 to Only Localhost
+
+Modify the file ***httpd.conf*** located in the directory **/etc/httpd/conf/** to restrict Apache to listen to port 80 only to IP 127.0.0.1 (localhost):
+
+```
+# Listen 80
+Listen 127.0.0.1:80
+```
+
+
+
+
+
+## Updating i2b2 Webclient
+
+Stop the Apache web server:
+
+```
+systemctl stop httpd.service
+```
+
+### Dowloading the Latest Code
+
+Download the latest i2b2 webclient from Github: [https://github.com/i2b2/i2b2-webclient](https://github.com/i2b2/i2b2-webclient).
+
+Replace the current webclient code with the latest code.
+
+> **WARNING** Make sure you backup the previous code!
+
+### Configuring i2b2 Host Domain 
+
+Modify the ***i2b2_config_data.json*** file in **/var/www/html/webclient**:
+
+```json
+{
+    "urlProxy": "index.php",
+    "urlFramework": "js-i2b2\/",
+    "startZoomed": true,
+    "lstDomains": [
+        {
+            "domain": "i2b2demo",
+            "name": "HarvardDemo SAML",
+            "allowAnalysis": true,
+            "urlCellPM": "https:\/\/sp.example.org\/webclient\/i2b2\/services\/PMService\/",
+            "registrationMethod": "saml",
+            "loginType": "federated",
+            "showRegistration": true,
+            "installer": "\/webclient\/plugin_installer\/",
+            "debug": true
+        },      
+        {
+            "domain": "i2b2demo",
+            "name": "HarvardDemo",
+            "allowAnalysis": true,
+            "urlCellPM": "https:\/\/sp.example.org\/webclient\/i2b2\/services\/PMService\/",
+            "registrationMethod": "",
+            "loginType": "local",
+            "showRegistration": false,
+            "debug": true
+        }
+    ]
+}
+```
+
+> Remember to replace *sp.example.org* with your domain name.
+
+Start the Apache web server:
+
+```
+systemctl start httpd.service
+```
