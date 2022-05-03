@@ -337,7 +337,7 @@ Modify the ***i2b2_config_data.json*** file in **/var/www/html/webclient**:
             "domain": "i2b2demo",
             "name": "HarvardDemo SAML",
             "allowAnalysis": true,
-            "urlCellPM": "https:\/\/sp.example.org\/webclient\/i2b2\/services\/PMService\/",
+            "urlCellPM": "http:\/\/127.0.0.1\/i2b2\/services\/PMService\/",
             "registrationMethod": "saml",
             "loginType": "federated",
             "showRegistration": true,
@@ -348,7 +348,7 @@ Modify the ***i2b2_config_data.json*** file in **/var/www/html/webclient**:
             "domain": "i2b2demo",
             "name": "HarvardDemo",
             "allowAnalysis": true,
-            "urlCellPM": "https:\/\/sp.example.org\/webclient\/i2b2\/services\/PMService\/",
+            "urlCellPM": "http:\/\/127.0.0.1\/i2b2\/services\/PMService\/",
             "registrationMethod": "",
             "loginType": "local",
             "showRegistration": false,
@@ -358,10 +358,10 @@ Modify the ***i2b2_config_data.json*** file in **/var/www/html/webclient**:
 }
 ```
 
-> Remember to replace *sp.example.org* with your domain name.
+> Note that the domain is 127.0.0.1 because the Apache HTTP server is forwarding the path */i2b2/services/* on port 80 of 127.0.0.1.
 
-Start the Apache web server:
+Restart the Apache web server:
 
 ```
-systemctl start httpd.service
+systemctl restart httpd.service
 ```
