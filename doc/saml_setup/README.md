@@ -220,17 +220,19 @@ The metadata file contains information about the Service Provider (SP) including
 
 ## Configuring the Apache JServ Protocol (AJP)
 
-With the latest version of i2b2, the request to the Hives no longer made directly to the Wilfly.  Instead, the request is made to the Apache HTTP server and then gets proxied via AJP over to Wildfly.
+With the latest version of i2b2, the request to the Hives is no longer made directly to Wilfly.  Instead, the request is made to the Apache HTTP server and then gets proxied over to Wildfly via AJP.
 
-### Configuring the Apache HTTP Server.
+AJP is a highly trusted protocol and should never be exposed to untrusted clients. The communication between the clients is insecure (data is sent in clear text) and assumes that your network is safe.  The configuration below will prevent AJP from being exposed.
 
-Stop the server:
+### Protect the AJP Connection With a Secret
 
-```
-systemctl stop httpd.service
-```
+Create a secret key to used by the Apache HTTP server and Wildfly.  You can generate a random key here [https://randomkeygen.com/](https://randomkeygen.com/).
 
-#### Restrict Port 80 to Only Localhost
+For the purpose of this guide, we will use ***5F6C696F56D37BCFD1296C3E33A11*** as the secret key.
+
+### Configuring the Apache HTTP Server
+
+#### Restricting Port 80 to Only to Localhost
 
 Modify the file ***httpd.conf*** located in the directory **/etc/httpd/conf/** to restrict Apache to listen to port 80 only to IP 127.0.0.1 (localhost):
 
@@ -238,18 +240,80 @@ Modify the file ***httpd.conf*** located in the directory **/etc/httpd/conf/** t
 # Listen 80
 Listen 127.0.0.1:80
 ```
+#### Adding AJP Configuration
 
+Create a file named ***ajp.conf*** in the directory **/etc/httpd/conf.d/** with the following content:
 
+```
+<VirtualHost 127.0.0.1:80>
+    ProxyRequests Off
+    ProxyPreserveHost Off
+    <Location /i2b2/services/>
+        Require ip 127.0.0.1
+        ProxyPass ajp://localhost:8009/i2b2/services/ secret=5F6C696F56D37BCFD1296C3E33A11
+    </Location>
+</VirtualHost>
 
+<VirtualHost _default_:443>
+    SSLEngine on
+    SSLProtocol all -SSLv2 -SSLv3
+    SSLCipherSuite HIGH:3DES:!aNULL:!MD5:!SEED:!IDEA
+    SSLCertificateFile /etc/pki/tls/certs/localhost.crt
+    SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+</VirtualHost>
+```
 
+> Remember to replace the secret key *5F6C696F56D37BCFD1296C3E33A11* with your own.
+
+### Configuring Wildfly
+
+Modify the file ***standalone.xml*** in the directory **/opt/wildfly/standalone/configuration** to enable AJP:
+
+Ensure that AJP port is enable and set to *8009*:
+
+```xml
+<socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
+    ...
+    ...
+    <socket-binding name="ajp" port="${jboss.ajp.port:8009}"/>
+    ...
+    ...
+</socket-binding-group>
+```
+
+Set AJP listener and secret key:
+
+```xml
+<subsystem xmlns="urn:jboss:domain:undertow:9.0" default-server="default-server" default-virtual-host="default-host" default-servlet-container="default" default-security-domain="other" statistics-enabled="${wildfly.undertow.statistics-enabled:${wildfly.statistics-enabled:false}}">
+    <buffer-cache name="default"/>
+    <server name="default-server">
+        <ajp-listener name="ajp" socket-binding="ajp" max-post-size="10485760000" scheme="http"/>
+        ...
+        ...
+        <host name="default-host" alias="localhost">
+            ...
+            <filter-ref name="secret-checker" predicate="equals(%p, 8009)"/>
+            ...
+        </host>
+    </server>
+    ...
+    ...
+    <filters>
+        <expression-filter name="secret-checker" expression="not equals(%{r,secret}, '5F6C696F56D37BCFD1296C3E33A11') -> response-code(403)"/>
+    </filters>
+</subsystem>
+```
+
+### Restarting the Servers
+
+Execute the command below to restart Apache HTTP server and Wildfly:
+
+```
+sudo systemctl restart wildfly.service
+sudo systemctl restart httpd.service
+```
 
 ## Updating i2b2 Webclient
-
-Stop the Apache web server:
-
-```
-systemctl stop httpd.service
-```
 
 ### Dowloading the Latest Code
 
