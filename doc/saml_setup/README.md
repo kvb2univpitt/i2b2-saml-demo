@@ -253,14 +253,6 @@ Create a file named ***ajp.conf*** in the directory **/etc/httpd/conf.d/** with 
         ProxyPass ajp://localhost:8009/i2b2/services/ secret=5F6C696F56D37BCFD1296C3E33A11
     </Location>
 </VirtualHost>
-
-<VirtualHost _default_:443>
-    SSLEngine on
-    SSLProtocol all -SSLv2 -SSLv3
-    SSLCipherSuite HIGH:3DES:!aNULL:!MD5:!SEED:!IDEA
-    SSLCertificateFile /etc/pki/tls/certs/localhost.crt
-    SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
-</VirtualHost>
 ```
 
 > Remember to replace the secret key *5F6C696F56D37BCFD1296C3E33A11* with your own.
