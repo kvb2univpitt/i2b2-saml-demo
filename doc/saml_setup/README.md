@@ -240,6 +240,7 @@ Modify the file ***httpd.conf*** located in the directory **/etc/httpd/conf/** t
 # Listen 80
 Listen 127.0.0.1:80
 ```
+
 #### Adding AJP Configuration
 
 Create a file named ***ajp.conf*** in the directory **/etc/httpd/conf.d/** with the following content:
@@ -305,19 +306,35 @@ sudo systemctl restart wildfly.service
 sudo systemctl restart httpd.service
 ```
 
-## Updating i2b2 Webclient
+## Updating i2b2 Applications
 
-### Dowloading the Latest Code
+### Updating i2b2 Core Server
+
+Stop Wildfly:
+
+```
+systemctl stop wildfly.service
+```
+
+Download the latest i2b2 core server from Github: [https://github.com/i2b2/i2b2-core-server](https://github.com/i2b2/i2b2-core-server)
+
+Configure, compile, and install the latest version.  For more information, please see the [installation guide](https://community.i2b2.org/wiki/display/getstarted/A.+Server+Install+on+1.7.12+and+higher)
+
+Start Wildfly:
+
+```
+systemctl start wildfly.service
+```
+
+### Updating i2b2 Webclient
 
 Download the latest i2b2 webclient from Github: [https://github.com/i2b2/i2b2-webclient](https://github.com/i2b2/i2b2-webclient).
 
-Replace the current webclient code with the latest code.
+Copy all the contents over to the directory **/var/www/html/webclient/**
 
 > **WARNING** Make sure you backup the previous code!
 
-### Configuring i2b2 Host Domain 
-
-Modify the ***i2b2_config_data.json*** file in **/var/www/html/webclient**:
+Modify the ***i2b2_config_data.json*** file located in the directory **/var/www/html/webclient/**:
 
 ```json
 {
@@ -350,6 +367,12 @@ Modify the ***i2b2_config_data.json*** file in **/var/www/html/webclient**:
 }
 ```
 
+Modify the ***config.php*** file located in the directory **/var/www/html/webclient/registration/user**.  Set the PHP variable ***$config_pm_uri*** to the following:
+
+```php
+$config_pm_uri = 'http://127.0.0.1/i2b2/services/PMService/getServices';
+```
+
 > Note that the domain is 127.0.0.1 because the Apache HTTP server is forwarding the path */i2b2/services/* on port 80 of 127.0.0.1.
 
 Restart the Apache web server:
@@ -357,3 +380,36 @@ Restart the Apache web server:
 ```
 systemctl restart httpd.service
 ```
+
+### Updating the Lookup Table in the Database
+
+Run the following SQL queries to update the pm_cell_data table:
+
+###### PostgreSQL:
+```sql
+UPDATE pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/QueryToolService/' WHERE cell_id  = 'CRC';
+UPDATE pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/FRService/' WHERE cell_id  = 'FRC';
+UPDATE pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/OntologyService/' WHERE cell_id  = 'ONT';
+UPDATE pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/WorkplaceService/' WHERE cell_id  = 'WORK';
+UPDATE pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/IMService/' WHERE cell_id  = 'IM';
+```
+
+###### Oracle:
+```sql
+UPDATE i2b2pm.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/QueryToolService/' WHERE cell_id  = 'CRC';
+UPDATE i2b2pm.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/FRService/' WHERE cell_id  = 'FRC';
+UPDATE i2b2pm.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/OntologyService/' WHERE cell_id  = 'ONT';
+UPDATE i2b2pm.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/WorkplaceService/' WHERE cell_id  = 'WORK';
+UPDATE i2b2pm.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/IMService/' WHERE cell_id  = 'IM';
+```
+
+###### SQL Server:
+```sql
+UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/QueryToolService/' WHERE cell_id  = 'CRC';
+UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/FRService/' WHERE cell_id  = 'FRC';
+UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/OntologyService/' WHERE cell_id  = 'ONT';
+UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/WorkplaceService/' WHERE cell_id  = 'WORK';
+UPDATE i2b2pm.dbo.pm_cell_data SET url = 'http://127.0.0.1/i2b2/services/IMService/' WHERE cell_id  = 'IM';
+```
+
+> Note that your database schema may be different.
