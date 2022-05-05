@@ -24,7 +24,7 @@ It is generally best practice to update the operating system to get the latest s
 Execute the following command to update the operating system:
 
 ```
-sudo dnf -y update
+sudo yum -y update
 ```
 
 Restart the server for the changes to apply.
@@ -36,13 +36,13 @@ Please visit [Extra Packages for Enterprise Linux](https://docs.fedoraproject.or
 Execute the following command to install additional open source packages:
 
 ```
-sudo dnf -y install epel-release
+sudo yum -y install epel-release
 ```
 
 Run update again to pull the packages:
 
 ```
-sudo dnf -y update
+sudo yum -y update
 ```
 
 ## Installing Shibboleth
@@ -296,6 +296,8 @@ Set AJP listener and secret key:
     </filters>
 </subsystem>
 ```
+
+> Remember to replace the secret key *5F6C696F56D37BCFD1296C3E33A11* with your own.
 
 ### Restarting the Servers
 
