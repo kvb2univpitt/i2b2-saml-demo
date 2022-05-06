@@ -17,7 +17,22 @@ The i2b2 webclient has two ways to self-register, local self-registration and fe
 
 ### Enabling Local User Self-Registration
 
-Modify the file ***i2b2_config_data.json*** located in the directory **/var/www/html/webclient/**.  Set the value of the attribute **showRegistration** to ***true*** and set the value of the attribute **registrationMethod** empty.
+Modify the file ***config.php*** that is located in the directory **/var/www/html/webclient/registration/user** to enable user self-registration.  Set the value of the PHP attribute **config_pm_uri** to ***'http://127.0.0.1/i2b2/services/PMService/getServices'***.
+
+For an example:
+
+```php
+<?php
+
+$config_service_account_id = 'i2b2';
+$config_service_account_pw = 'demouser';
+
+$config_pm_uri = 'http://127.0.0.1/i2b2/services/PMService/getServices';
+$config_domain = 'i2b2demo';
+$config_project_id = 'Demo';
+```
+
+Modify the file ***i2b2_config_data.json*** that is located in the directory **/var/www/html/webclient/** to enable option for user self-registration.  Set the value of the attribute **showRegistration** to ***true*** and set the value of the attribute **registrationMethod** empty.
 
 For an example:
 
@@ -132,7 +147,7 @@ Once registered, the page will redirected back to the main (login) page with a c
 
 ##  Adding Project Roles to New User
 
-1. Follow the step 1-6 above.
+1. Follow the steps 1-6 above.
 
 2. Click on the user you want to add roles to.
 
