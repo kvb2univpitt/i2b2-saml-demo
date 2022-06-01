@@ -18,7 +18,7 @@ The ***terms and conditions***, also known as ***terms of service***, contain th
 
 An example of the terms and conditions:
 
-```json
+```js
 i2b2.UI = {};
 /* Start Configuration. Note: be careful to keep trailing commas after each parameter */
 i2b2.UI.cfg = {
