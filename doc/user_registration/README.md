@@ -2,6 +2,7 @@
 
 A guide on how to do the following:
 
+- set the terms and conditions
 - enable/disable user self-registration in i2b2 webclient
 - self-register new user
 - assign project and roles to new user (for administrator only)
@@ -10,6 +11,32 @@ Whenever a new user is added (registered) into the system, no project is assigne
 
 1. add the new user to a project
 2. add the project roles to the new user
+
+## Setting the Terms and Conditions
+
+The ***terms and conditions***, also known as ***terms of service***, contain the rules created by the service provider in which the user of service must abide by.  The terms and conditions are located in the file ***i2b2_ui_config.js*** located in the directory **/var/www/html/webclient/js-i2b2/i2b2_ui_config.js**.  To set terms and conditions, modify the attribute ***termsCondition*** of the JSON object ***i2b2.UI.cfg*** in the ***i2b2_ui_config.js*** file.
+
+An example of the terms and conditions:
+
+```json
+i2b2.UI = {};
+/* Start Configuration. Note: be careful to keep trailing commas after each parameter */
+i2b2.UI.cfg = {
+   ...
+
+   termsCondition: "Terms & Conditions\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec volutpat lorem. 
+   Donec augue lacus, vulputate nec arcu a, iaculis viverra felis. Integer sed suscipit risus. Donec ut mauris efficitur, 
+   dignissim sapien eget, accumsan libero. Quisque pretium auctor feugiat. Duis eu vulputate odio, eu aliquam velit. 
+   Integer sem leo, sagittis sit amet nibh a, auctor elementum ex. Pellentesque ut massa dapibus, sollicitudin turpis sed, 
+   pharetra est. Cras sodales blandit lorem a finibus. Sed nibh mi, euismod ut libero et, hendrerit maximus enim. Cras 
+   dignissim feugiat nunc, non fringilla sapien porttitor vel. Nullam lobortis sed sem sed laoreet. Praesent lorem leo, 
+   efficitur id viverra in, luctus et lectus. Nunc eros risus, tempus ac iaculis eu, aliquam ac mauris. Donec id risus 
+   nisi. Maecenas neque dui, porttitor non porttitor non, tincidunt nec ligula."
+
+   ...
+}
+
+```
 
 ## Enabling or Disabling User Self-Registration
 
@@ -66,7 +93,7 @@ For an example:
     "allowAnalysis": true,
     "urlCellPM": "http:\/\/127.0.0.1\/i2b2\/services\/PMService\/",
     "registrationMethod": "saml",
-    "loginType": "local",
+    "loginType": "federated",
     "showRegistration": true,
     "debug": true
 }
