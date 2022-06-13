@@ -1,6 +1,6 @@
-# i2b2 SAML: Customized Identity Provider (IdP) Login Button
+# i2b2 SAML: Customize Identity Provider (IdP) Login Button
 
-A guide on how to customized login button icon and text.
+A guide on how to customize the IdP login button color, icon and text.
 
 
 By default the IdP login button looks like the one shown below:
