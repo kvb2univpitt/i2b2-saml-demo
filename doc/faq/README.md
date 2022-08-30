@@ -16,7 +16,7 @@ All inbound request to Wildfly will go through the Apache web server on port 443
 
 AJP has performance advantage over HTTP.  HTTP is plain-text protocol, making it quite expensive in terms of band width.  AJP carries the same information as http but in a more compact format.  With AJP, request method can be reduced to a single byte and the header can be reduced to two bytes.  For more information, please see the "Basic Packet Structure" section of the [Apache Module mod_proxy_ajp](https://httpd.apache.org/docs/2.4/mod/mod_proxy_ajp.html) documentation.
 
-> Note that AJP is recommended but **not required** to run i2b2.
+> Note that AJP is **not required** to run i2b2.  It is recommended for SAML authentication setup.
 
 ## Shibboleth
 
